@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from school_users.models import User
 
 
 class BaseModel(models.Model):
@@ -20,6 +21,24 @@ class BaseModel(models.Model):
         Table wont be created in th database
         '''
         abstract = True
+
+class School(BaseModel):
+    """
+    School represents an educational institution within the system.
+
+    Attributes:
+        name (CharField): The unique name of the school, limited to 100 characters.
+        address (TextField): The physical address of the school.
+        owner (ForeignKey): A reference to the User model,
+    """
+    name =  models.CharField(max_length=100, unique=True)
+    address = models.TextField()
+    owner = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='schools'
+    )
+
 
 
 class Student(BaseModel):
@@ -46,6 +65,10 @@ class Student(BaseModel):
         on_delete=models.SET_NULL,
         related_name='students',
         null=True)
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE,
+        related_name='students'
+    )
 
 
 class Grade(BaseModel):
@@ -63,6 +86,10 @@ class Grade(BaseModel):
 
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE,
+        related_name='grade'
+    )
 
     def __str__(self):
         return self.name
@@ -77,6 +104,11 @@ class Fee(BaseModel):
     total_paid = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.0)
     students = models.ManyToManyField(Student, related_name='fees')
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE,
+        related_name='fees'
+    )
+
 
 
 class Payment(BaseModel):
