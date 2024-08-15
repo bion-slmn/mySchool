@@ -1,3 +1,2 @@
 .env
-pycache/
-migration/
+__pycache__/
