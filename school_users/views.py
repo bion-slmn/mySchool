@@ -5,6 +5,7 @@ from .models import User
 from django.http import HttpRequest
 from rest_framework.response import Response
 from .permissions import IsAdmin
+from rest_framework.permissions import AllowAny
 
 
 
@@ -47,7 +48,7 @@ class UserView(APIView):
 
         serializer =  UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
     
@@ -77,4 +78,18 @@ class UserView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+    
+class CreateAdminView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request: HttpRequest) -> Response:
+        serializer = UserSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # Save the user instance
+            user = serializer.save()
+            user.save()  # Save after setting flags
+
+            return Response(serializer.data, status=201)
+
         return Response(serializer.errors, status=400)

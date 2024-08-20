@@ -33,7 +33,7 @@ class School(BaseModel):
     """
     name =  models.CharField(max_length=100, unique=True)
     address = models.TextField()
-    owner = models.ForeignKey(
+    owner = models.OneToOneField(
         User, 
         on_delete=models.CASCADE, 
         related_name='schools'
@@ -59,7 +59,8 @@ class Student(BaseModel):
         FEMALE = 'female'
     name = models.CharField(max_length=200)
     date_of_birth = models.DateField()
-    gender = models.CharField(max_length=7)
+    gender = models.CharField(max_length=7,
+                              choices=Gender.choices)
     grade = models.ForeignKey(
         'Grade',
         on_delete=models.SET_NULL,
@@ -94,20 +95,52 @@ class Grade(BaseModel):
     def __str__(self):
         return self.name
 
-
 class Fee(BaseModel):
     """
     Model to represent the Fee structure for different Grades.
     """
-    name = models.CharField(max_length=100, unique=True)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    total_paid = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0.0)
-    students = models.ManyToManyField(Student, related_name='fees')
-    school = models.ForeignKey(
-        School, on_delete=models.CASCADE,
-        related_name='fees'
+    name = models.CharField(
+        max_length=100, 
+        unique=True, 
+        help_text="Unique name for the fee structure (e.g., 'Term 1 Fees')."
     )
+    total_amount = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        default=0.00,
+        help_text="Total fee amount for the grade."
+    )
+    total_paid = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=0.00, 
+        help_text="Amount that has been paid towards the total fee."
+    )
+    students = models.ManyToManyField(
+        'Student', 
+        related_name='fees', 
+        blank=True, 
+        help_text="Students associated with this fee."
+    )
+    from_date = models.DateTimeField(
+        help_text="The date from which this fee becomes effective."
+    )
+    to_date = models.DateTimeField(
+        help_text="The expiration date for this fee."
+    )
+    grade = models.ForeignKey(
+        'Grade',
+        on_delete=models.SET_NULL,
+        related_name='fees',
+        null=True,
+        blank=True,
+        help_text="Grade this fee structure applies to."
+    )
+
+
+    def __str__(self) -> str:
+        return f'{self.name} {self.from_date} - {self.to_date}'
+
 
 
 
@@ -140,13 +173,3 @@ class Payment(BaseModel):
     date_paid = models.DateTimeField(auto_now=True)
     payment_method = models.CharField(max_length=50)
     reference_number = models.CharField(max_length=100, unique=True, null=True)
-
-
-class Schoolterm(BaseModel):
-    name = models.CharField(max_length=30)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    student = models.OneToOneField(
-        Student,
-        on_delete=models.CASCADE,
-        related_name='term')
