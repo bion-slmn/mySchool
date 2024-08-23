@@ -30,12 +30,12 @@ class StudentSerializer(BaseSerializer):
     date_of_birth = serializers.DateTimeField(format="%Y-%m-%d")
     gender = serializers.CharField()
     class Meta:
-        model = Grade
+        model = Student
         fields = '__all__'
 
 
     def validate_gender(self, value):
-        if value in dict(Grade.Gender.choices):
+        if value in dict(Student.Gender.choices):
             return value
         raise serializers.ValidationError()
     
