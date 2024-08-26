@@ -1,10 +1,13 @@
 from django.shortcuts import get_object_or_404
-from ..models import Grade, School
+from ..models import Grade, Student
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpRequest
 from ..serializers import GradeSerializer
 from ..decorator import handle_exceptions
+from django.db.models import Count
+from rest_framework import status
+
 
 def check_has_school(request: HttpRequest) -> bool:
     """
@@ -62,4 +65,17 @@ class GradeView(APIView):
             serializer.save(school = my_school)
             return Response(serializer.data, 201)
         return Response(serializer.errors)
-    
+
+
+class StudentInGradeView(APIView):
+    @handle_exceptions
+    def get(self, request: HttpRequest) -> Response:
+        """
+        Get the grade and the total number of students in that grade.
+        """
+        grades = Grade.objects.annotate(num_students=Count('students'))
+        grade_and_student_number = [
+            {'name': grade.name, 'students_total': grade.num_students} 
+            for grade in grades
+        ]
+        return Response(grade_and_student_number, status=status.HTTP_200_OK)
