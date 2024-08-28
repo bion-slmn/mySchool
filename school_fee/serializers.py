@@ -14,6 +14,7 @@ class BaseSerializer(serializers.ModelSerializer):
     """
     id = serializers.CharField(read_only=True)
     created_at = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
+    updated_at = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
 
 
 class SchoolSerializer(BaseSerializer):
@@ -59,3 +60,14 @@ class FeeSerializer(serializers.ModelSerializer):
                 {'to_date': 'Expiration date must be after the start date.'}
             )
         return data
+    
+
+
+class PaymentSerializer(BaseSerializer):
+    student_name = serializers.CharField(source='student.name', read_only=True)
+    date_paid = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
+
+    class Meta:
+        model = Payment
+        fields = ['id', 'student', 'student_name', 'fee', 'amount', 'date_paid', 'payment_method', 'reference_number']
+

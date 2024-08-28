@@ -173,3 +173,6 @@ class Payment(BaseModel):
     date_paid = models.DateTimeField(auto_now=True)
     payment_method = models.CharField(max_length=50)
     reference_number = models.CharField(max_length=100, unique=True, null=True)
+
+    class Meta:
+        ordering = ['-date_paid']

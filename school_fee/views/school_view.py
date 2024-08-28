@@ -7,7 +7,6 @@ from ..serializers import SchoolSerializer
 from ..decorator import handle_exceptions
 
 
-
 class SchoolView(APIView):
     @handle_exceptions
     def get(self, request: HttpRequest, school_id: str) -> Response:
@@ -21,13 +20,14 @@ class SchoolView(APIView):
             Response: A response containing the serialized school data.
         """
 
-        school = get_object_or_404(School, id = school_id)
+        school = get_object_or_404(School, id=school_id)
         serializer = SchoolSerializer(school)
         return Response(serializer.data)
-    
+
+
 class CreateSchool(APIView):
     @handle_exceptions
-    def post(self, request: HttpRequest) ->Response:
+    def post(self, request: HttpRequest) -> Response:
         """
         Creates a new school record based on the provided request data.
 
@@ -35,7 +35,7 @@ class CreateSchool(APIView):
             request (HttpRequest): The HTTP request object containing school data.
 
         Returns:
-            Response: A response containing the serialized school data 
+            Response: A response containing the serialized school data
             if successful, or error details if validation fails.
 
         Raises:
@@ -52,7 +52,7 @@ class CreateSchool(APIView):
 
     def _check_user_has_school(self, request: HttpRequest) -> bool:
         """
-        Checks if the user has an associated school. 
+        Checks if the user has an associated school.
         Args:
             request (HttpRequest): The HTTP request object containing user information.
 

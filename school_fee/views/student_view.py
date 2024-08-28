@@ -7,6 +7,7 @@ from ..serializers import StudentSerializer
 from .grade_view import check_has_school
 from ..decorator import handle_exceptions
 
+
 class StudentView(APIView):
     def get(self, request: HttpRequest, student_id: str) -> Response:
         """
@@ -22,10 +23,11 @@ class StudentView(APIView):
         student = get_object_or_404(Student, id=student_id)
         serializer = StudentSerializer(student)
         return Response(serializer.data)
-    
+
+
 class CreateStudent(APIView):
     @handle_exceptions
-    def post(self, request: HttpRequest) ->Response:
+    def post(self, request: HttpRequest) -> Response:
         """
         Creates a new student record based on the provided request data.
 
@@ -47,12 +49,12 @@ class CreateStudent(APIView):
         grade_id = request.data.get('grade')
         grade = get_object_or_404(Grade, id=grade_id)
 
-        data =  {
+        data = {
             'name': request.data.get('name'),
             'date_of_birth': request.data.get('date_of_birth '),
             'gender': request.data.get('gender')
         }
-        
+
         serializer = StudentSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save(school=school, grade=grade)

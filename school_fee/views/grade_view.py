@@ -11,7 +11,7 @@ from rest_framework import status
 
 def check_has_school(request: HttpRequest) -> bool:
     """
-    Checks if the user has an associated school. 
+    Checks if the user has an associated school.
         This function returns the user's school if it exists, otherwise it returns None.
 
         Args:
@@ -41,11 +41,11 @@ class GradeView(APIView):
 
         grades = Grade.objects.all().values('id', 'name')
         return Response(grades)
-    
+
     @handle_exceptions
-    def post(self,  request: HttpRequest) ->Response:
+    def post(self, request: HttpRequest) -> Response:
         """
-        Creates a new grade record based on the provided request data. 
+        Creates a new grade record based on the provided request data.
         Args:
             request (HttpRequest): The HTTP request object containing grade data.
 
@@ -62,7 +62,7 @@ class GradeView(APIView):
             raise ValueError('Create a school first be4 adding a grade')
         serializer = GradeSerializer(data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save(school = my_school)
+            serializer.save(school=my_school)
             return Response(serializer.data, 201)
         return Response(serializer.errors)
 
@@ -75,7 +75,9 @@ class StudentInGradeView(APIView):
         """
         grades = Grade.objects.annotate(num_students=Count('students'))
         grade_and_student_number = [
-            {'name': grade.name, 'students_total': grade.num_students} 
+            {'name': grade.name, 'students_total': grade.num_students}
             for grade in grades
         ]
         return Response(grade_and_student_number, status=status.HTTP_200_OK)
+
+#
