@@ -7,6 +7,7 @@ from ..serializers import GradeSerializer
 from ..decorator import handle_exceptions
 from django.db.models import Count
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 
 def check_has_school(request: HttpRequest) -> bool:
@@ -28,6 +29,7 @@ def check_has_school(request: HttpRequest) -> bool:
 
 
 class GradeView(APIView):
+    permission_classes = [AllowAny]
     @handle_exceptions
     def get(self, request: HttpRequest) -> Response:
         """
@@ -68,16 +70,11 @@ class GradeView(APIView):
 
 
 class StudentInGradeView(APIView):
+    permission_classes = [AllowAny]
     @handle_exceptions
-    def get(self, request: HttpRequest) -> Response:
+    def get(self, request: HttpRequest, grade_id: str) -> Response:
         """
-        Get the grade and the total number of students in that grade.
+        Get the list of students in a grade.
         """
-        grades = Grade.objects.annotate(num_students=Count('students'))
-        grade_and_student_number = [
-            {'name': grade.name, 'students_total': grade.num_students}
-            for grade in grades
-        ]
-        return Response(grade_and_student_number, status=status.HTTP_200_OK)
-
-#
+        students = Student.objects.filter(grade_id=grade_id).values('id', 'name')
+        return Response(students)

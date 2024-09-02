@@ -26,7 +26,7 @@ class StudentView(APIView):
 
 
 class CreateStudent(APIView):
-    @handle_exceptions
+    #@handle_exceptions
     def post(self, request: HttpRequest) -> Response:
         """
         Creates a new student record based on the provided request data.
@@ -41,10 +41,11 @@ class CreateStudent(APIView):
         Raises:
             Http404: If the specified grade does not exist.
         """
-
+        
         school = check_has_school(request)
         if not school:
             return Response('User has no School', 400)
+        print(request.data, 2222222)
 
         grade_id = request.data.get('grade')
         grade = get_object_or_404(Grade, id=grade_id)
@@ -54,9 +55,10 @@ class CreateStudent(APIView):
             'date_of_birth': request.data.get('date_of_birth '),
             'gender': request.data.get('gender')
         }
-
+    
         serializer = StudentSerializer(data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save(school=school, grade=grade)
+            serializer.save(school=school)
             return Response(serializer.data, 201)
+        print(serializer.errors, 121)
         return Response(serializer.errors, 400)

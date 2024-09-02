@@ -1,9 +1,10 @@
 from django.urls import path
 from .views.school_view import SchoolView, CreateSchool
 from .views.grade_view import GradeView, StudentInGradeView
-from .views.fee_view import FeeView, FeePercentageCollected
+from .views.fee_view import FeeView, FeePercentageCollected, GradeFeeView
 from .views.student_view import StudentView, CreateStudent
-from .views.payment_views import PaymentonFee, CreatePaymentView
+from .views.payment_views import (PaymentonFee, CreatePaymentView,
+                                   PaymentPerStudent)
 
 urlpatterns = [
     # routes for school
@@ -17,14 +18,16 @@ urlpatterns = [
     # Route For student
     path('register-student/', CreateStudent.as_view()),
     path('view-student/<str:student_id>/', StudentView.as_view()),
-    path('student-number-in-grade/', StudentInGradeView.as_view(), name="number of students in a grade"),
+    path('students-in-grade/<str:grade_id>/', StudentInGradeView.as_view(), name="list 0f students in grade"),
     
 
     # Routes for fee
     path('create-fee/<str:grade_id>/', FeeView.as_view()),
     path('percentage-fee-per-grade/', FeePercentageCollected.as_view()),
+    path('fees-in-grade/<str:grade_id>/', GradeFeeView.as_view()),
 
     # route for payments
     path('payment-on-fee/<str:fee_id>/', PaymentonFee.as_view()),
     path('create-payment/', CreatePaymentView.as_view(), name='create-payment'),
+    path('payments-per-student/<str:fee_id>/', PaymentPerStudent.as_view())
 ]

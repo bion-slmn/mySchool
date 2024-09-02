@@ -10,7 +10,7 @@ from rest_framework.permissions import AllowAny
 from typing import List, Dict, Any
 from collections import defaultdict
 from django.db.models import Count
-
+from rest_framework.permissions import AllowAny
 
 def group_by_key(source: List[Dict[str, Any]],
                  group_by: str) -> Dict[str, List[Dict[str, Any]]]:
@@ -58,7 +58,7 @@ class FeeView(APIView):
         serializer = FeeSerializer(fee)
         return Response(serializer.data)
 
-    @handle_exceptions
+    #@handle_exceptions
     def post(self, request: HttpRequest, grade_id) -> Response:
         """
         Creates a new fee associated with a specific grade and assigns it to all students in that grade.
@@ -91,7 +91,6 @@ class FeeView(APIView):
 
 class FeePercentageCollected(APIView):
     permission_classes = [AllowAny]
-
     @handle_exceptions
     def get(self, request: HttpRequest) -> Response:
         """
@@ -114,6 +113,7 @@ class FeePercentageCollected(APIView):
 
 
 class GradeFeeView(APIView):
+    permission_classes = [AllowAny]
     @handle_exceptions
     def get(self, request: HttpRequest, grade_id) -> Response:
         """
@@ -128,5 +128,5 @@ class GradeFeeView(APIView):
         """
 
         grade = get_object_or_404(Grade, id=grade_id)
-        fee = grade.fees.all().values('name', 'total_amount')
+        fee = grade.fees.all().values('id', 'name', 'total_amount')
         return Response(fee, 200)

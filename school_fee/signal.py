@@ -1,7 +1,8 @@
 from django.dispatch import receiver
-from .models import Payment, Fee
-from django.db.models.signals import post_save
+from .models import Payment, Fee, Student, Grade
+from django.db.models.signals import post_save, pre_save
 from django.db.models import F
+from django.utils import timezone
 
 
 
@@ -22,3 +23,41 @@ def add_fee_paid(sender, instance, created, **kwargs):
     if created:
         fee = Fee.objects.filter(id=instance.fee.id)
         fee.update(total_paid=F('total_paid') + instance.amount)
+
+
+def grade_changed(instance) -> bool:
+    """
+    Determines whether the grade of a student instance has
+    changed since it was last saved. 
+
+    Args:
+        instance: The instance of the Student model being checked.
+
+    Returns:
+        bool: True if the grade has changed, False otherwise.
+    """
+
+    student = Student.objects.get(id=instance.pk)
+    return student.grade != instance.grade
+
+
+@receiver(post_save, sender=Student)
+def add_associated_fee(sender, instance, created, **kwargs):
+    """
+    Automatically adds associated fees to a student instance before it is saved. 
+    This function checks if the student is being added or if their grade has changed, 
+    and adds relevant fees based on the current date.
+
+    Args:
+        sender: The model class that sent the signal.
+        instance: The instance of the Student model being saved.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        None: This function does not return a value, but modifies the instance's fees.
+    """
+    if created:
+        grade = instance.grade
+        today = timezone.now().date()
+        relevant_fees = grade.fees.filter(to_date__gte=today)
+        instance.fees.add(*relevant_fees)

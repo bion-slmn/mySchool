@@ -47,3 +47,9 @@ curl "http://localhost:8000/api/school/create-fee/2cb7351f-e606-4ada-a2c5-1286e9
 "grade": "2cb7351f-e606-4ada-a2c5-1286e9399188",
 "students": []
 }
+
+
+# make a payment
+ curl -X POST http://localhost:8000/api/school/create-payment/ -H "Content-Type: application/json" -d '{"student": "83c33d8a-456b-4f83-81fa-ebf6361218ea", "fee": "aa048e34-9602-4712-871d-165a6b2cc960", "amount": "210.00", "date_paid": "2024-08-29", "payment_method": "mpesa", "reference_number": "1234"}
+
+ 
