@@ -1,7 +1,8 @@
 .login-page {
-    width: 460px;
+    width: 80%;
     padding: 8% 0 0;
     margin: auto;
+    border-radius: 15px;
   }
 
   .LoginForm {
@@ -27,6 +28,7 @@
     font-size: 14px;
   }
 
+
   .LoginForm button {
     font-family: "Roboto", sans-serif;
     text-transform: uppercase;
@@ -45,10 +47,9 @@
     background: #43A047;
   }
   
-  .LoginForm label {
-    font-weight: bold; 
-    display: block; 
-    text-align: left; 
+
+  .login_label{
+    width: 100%;
     margin-bottom: 10px; /* Add some spacing between the label and input */
   }
 

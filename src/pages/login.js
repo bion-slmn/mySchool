@@ -1,47 +1,36 @@
 import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate and useLocation
 import "../styles/login.css";
+import { useFormSubmit } from "../Components/form";
+
+const Button = ({ text }) => {
+  return <button type="submit">{text}</button>;
+};
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  const navigate = useNavigate(); // Initialize useNavigate
+  const location = useLocation(); // Initialize useLocation
 
-    const requestBody = {
-      email,
-      password,
-    };
+  // Get the redirect location or default to /dashboard
+  const redirectPath = location.state?.from?.pathname || "/";
 
-    try {
-      const response = await fetch("http://localhost:8000/api/user/login/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("Login successful:", data);
-
-      // Handle successful login, e.g., redirect or update UI
-    } catch (error) {
-      console.error("Error during login:", error);
-      // Handle errors, e.g., show error message to user
+  const { handleSubmit, error } = useFormSubmit(
+    "http://localhost:8000/api/user/login/",
+    { email, password },
+    () => {
+      // Handle successful login, navigate to the redirect path
+      navigate(redirectPath);
     }
-  };
+  );
 
   return (
     <div className="login-page">
       <h1>Welcome to sHule ....</h1>
-      <form onSubmit={handleLogin} className="LoginForm">
+      <form onSubmit={handleSubmit} className="LoginForm">
         <h3>Let's Login</h3>
-        <label>Email Address</label>
         <input
           type="email"
           placeholder="Enter your email"
@@ -50,7 +39,6 @@ function Login() {
           required
           autoComplete="email"
         />
-        <label>Password</label>
         <input
           type="password"
           placeholder="Enter your password"
@@ -59,7 +47,8 @@ function Login() {
           required
           autoComplete="current-password"
         />
-        <button type="submit">Login</button>
+        <Button text="Login" />
+        {error && <div style={{ color: "red" }}>{error}</div>}
       </form>
     </div>
   );
