@@ -5,6 +5,7 @@ from .views.fee_view import FeeView, FeePercentageCollected, GradeFeeView
 from .views.student_view import StudentView, CreateStudent
 from .views.payment_views import (PaymentonFee, CreatePaymentView,
                                    PaymentPerStudent)
+from .views.search_view import GetDetailView, SearchView
 
 urlpatterns = [
     # routes for school
@@ -29,5 +30,9 @@ urlpatterns = [
     # route for payments
     path('payment-on-fee/<str:fee_id>/', PaymentonFee.as_view()),
     path('create-payment/', CreatePaymentView.as_view(), name='create-payment'),
-    path('payments-per-student/<str:fee_id>/', PaymentPerStudent.as_view())
+    path('payments-per-student/<str:fee_id>/', PaymentPerStudent.as_view()),
+
+    # search routes
+    path('search-student/', SearchView.as_view()),
+    path('get-student-detail/', GetDetailView.as_view()),
 ]
