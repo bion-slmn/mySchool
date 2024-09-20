@@ -18,7 +18,7 @@ function Login() {
   const redirectPath = location.state?.from?.pathname || "/";
 
   const { handleSubmit, error } = useFormSubmit(
-    "http://localhost:8000/api/user/login/",
+    "api/user/login/",
     { email, password },
     () => {
       // Handle successful login, navigate to the redirect path

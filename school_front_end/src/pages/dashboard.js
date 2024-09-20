@@ -11,11 +11,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchFees = async () => {
       try {
-        const url =
-          "http://localhost:8000/api/school/percentage-fee-per-grade/";
+        const url = "api/school/percentage-fee-per-grade/";
         const [data, urlError] = await fetchData("GET", url);
         if (urlError) {
-          
           throw new Error(urlError);
         }
         setFeeData(data);

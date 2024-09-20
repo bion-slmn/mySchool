@@ -26,7 +26,7 @@ const CreateFee = () => {
   };
 
   const handleShowForm = async () => {
-    const url = "http://localhost:8000/api/school/view-all-grades/";
+    const url = "api/school/view-all-grades/";
 
     try {
       const [data, urlError] = await fetchData("GET", url);
@@ -44,7 +44,7 @@ const CreateFee = () => {
   };
 
   let { handleSubmit, error } = useFormSubmit(
-    `http://localhost:8000/api/school/create-fee/${formData.grade}/`,
+    `api/school/create-fee/${formData.grade}/`,
     formData, // Pass formData directly
     () => {
       setSubmitted(true);

@@ -8,7 +8,7 @@ const RegisterSchool = () => {
   const [showForm, setShowForm] = useState(false);
 
   const { handleSubmit, error } = useFormSubmit(
-    "http://localhost:8000/api/school/create-school/",
+    "api/school/create-school/",
     { school, address },
     () => {
       // Handle successful login, e.g., redirect or update UI

@@ -19,7 +19,7 @@ const FeeAndPayment = () => {
     const fetchFeeData = async () => {
       setIsLoading(true);
       try {
-        const url = `http://localhost:8000/api/school/payment-on-fee/${feeId}/`;
+        const url = `api/school/payment-on-fee/${feeId}/`;
         const [data, urlError] = await fetchData("GET", url);
         if (urlError) {
           navigate("/login");
@@ -52,8 +52,7 @@ const FeeAndPayment = () => {
   }
 
   const calculateFeeBalance = (feeToPay, payments) => {
-    let res = feeToPay - payments.amount;
-    return res;
+    return feeToPay - payments.amount;
   };
 
   return (
