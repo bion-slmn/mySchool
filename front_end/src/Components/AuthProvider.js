@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const [token, setToken] = useState(localStorage.getItem("sHule") || "");
   const navigate = useNavigate();
   const loginAction = async (data) => {
@@ -26,8 +26,8 @@ const AuthProvider = ({ children }) => {
       console.log(res, 2323);
       if (res.access) {
         const decoded = jwtDecode(res.access);
-        console.log(decoded, "decoded");
-        setUser(res.data); // decode the token and get the user data
+        console.log(decoded, "decoded", 222222222);
+        setUser(decoded);
         setToken(res.access);
         localStorage.setItem("sHule", res.access);
         navigate("/dashboard");
