@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import dj_database_url
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -82,12 +88,10 @@ WSGI_APPLICATION = 'my_school.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+print(os.environ.get("DATABASE_URL"), 1111111111)
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
 CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
