@@ -32,7 +32,7 @@ const NavBar = () => {
         <Link to="/" className="logo">
           sHule
         </Link>
-      </div> 
+      </div>
       <div className="navbar-right">
         {isLoggedIn ? (
           <>
@@ -50,6 +50,6 @@ const NavBar = () => {
       </div>
     </nav>
   );
-  
+};
 
 export default NavBar;
