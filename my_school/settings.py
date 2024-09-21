@@ -66,6 +66,8 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'my_school.urls'
 AUTH_USER_MODEL = 'school_users.User'
 
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000', 'https://my-school-psi.vercel.app/']
+
 
 TEMPLATES = [
     {

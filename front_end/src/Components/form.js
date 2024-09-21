@@ -91,7 +91,7 @@ export const HandleResult = ({ error }) => {
 export const fetchData = async (endpoint_method, endpoint) => {
   let data = null; // Initialize data to null
   let urlError = ""; // Initialize error message to an empty string
-  const url = "http://localhost:8000/" + endpoint;
+  const url = "https://myschool-ax55.onrender.com/" + endpoint;
   console.log(url);
 
   try {
