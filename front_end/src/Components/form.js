@@ -53,6 +53,7 @@ export const useFormSubmit = (
 
       // If the response status is not ok, throw a general error with the detail from the response
       if (!response.ok) {
+        console.log(data, 1212121212);
         throw new Error(data.detail || "An error occurred.");
       }
 
