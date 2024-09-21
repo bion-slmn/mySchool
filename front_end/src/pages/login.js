@@ -16,6 +16,7 @@ function Login() {
   const auth = useAuth();
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Submiting a login form, email:", email, "password:", password);
     if (email && password) {
       auth.loginAction({ email, password });
     } else {
@@ -25,6 +26,7 @@ function Login() {
 
   return (
     <div className="login-page">
+      console.log(l12121212)
       <h1>Welcome to sHule ....</h1>
       <form onSubmit={handleSubmit} className="LoginForm">
         <h3>Let's Login</h3>
