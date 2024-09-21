@@ -12,6 +12,7 @@ const NavBar = () => {
   useEffect(() => {
     if (user.token) {
       setIsLoggedIn(true);
+      console.log(user.user.school, "school");
     }
   }, []);
 

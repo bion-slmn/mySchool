@@ -2,6 +2,19 @@ from rest_framework import serializers
 from .models import User
 from django.contrib.auth.password_validation import (
     validate_password, password_validators_help_texts)
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        
+        token['name'] = user.first_name
+        if hasattr(user, 'schools'):
+            token['school'] = user.schools.name
+
+        return token
 
 
 class UserSerializer(serializers.ModelSerializer):

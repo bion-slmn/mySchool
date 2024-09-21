@@ -6,6 +6,12 @@ from django.http import HttpRequest
 from rest_framework.response import Response
 from .permissions import IsAdmin
 from rest_framework.permissions import AllowAny
+from .serializers import MyTokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 
 
