@@ -37,7 +37,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'myschool-ax55.onrender.com',
-    'https://my-school-psi.vercel.app',
+    
 ]
 
 
@@ -102,7 +102,7 @@ DATABASES = {
     "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://my-school-psi.vercel.app']
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
