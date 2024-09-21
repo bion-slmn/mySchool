@@ -23,6 +23,7 @@ export const useFormSubmit = (
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const url = "https://myschool-ax55.onrender.com/" + endpoint;
 
     try {
       const headers = {
@@ -34,7 +35,7 @@ export const useFormSubmit = (
         headers.Authorization = `Bearer ${localStorage.getItem("sHule")}`;
       }
 
-      const response = await fetch(endpoint, {
+      const response = await fetch(url, {
         method: "POST",
         headers,
         body: JSON.stringify(payload),
