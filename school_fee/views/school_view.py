@@ -44,6 +44,7 @@ class CreateSchool(APIView):
 
         if self._check_user_has_school(request):
             return Response('User can only have one school', 400)
+        print(121211212)
         serializer = SchoolSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save(owner=request.user)
@@ -59,5 +60,4 @@ class CreateSchool(APIView):
         Returns:
             bool: True if the user has a school, otherwise False.
         """
-
-        return bool(request.user.schools)
+        return hasattr(request.user, 'schools')
