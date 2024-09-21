@@ -32,23 +32,24 @@ const NavBar = () => {
         <Link to="/" className="logo">
           sHule
         </Link>
-      </div>
+      </div> 
       <div className="navbar-right">
         {isLoggedIn ? (
-          <button onClick={handleLogout} className="user-icon">
-            Logout
-          </button>
+          <>
+            <p>{user.user.name || ""}</p>
+            <p>{user.user.school || ""}</p>
+            <button onClick={handleLogout} className="user-icon">
+              Logout
+            </button>
+          </>
         ) : (
           <button onClick={handleLogin} className="user-icon">
             Login
           </button>
         )}
-        <Link to="/account" className="user-icon">
-          <FaUser className="user" />
-        </Link>
       </div>
     </nav>
   );
-};
+  
 
 export default NavBar;
