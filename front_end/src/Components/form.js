@@ -92,7 +92,7 @@ export const fetchData = async (endpoint_method, endpoint) => {
   let data = null; // Initialize data to null
   let urlError = ""; // Initialize error message to an empty string
   const url = "https://myschool-ax55.onrender.com/" + endpoint;
-  console.log(url);
+  console.log(url, 1212121212);
 
   try {
     const response = await fetch(url, {
