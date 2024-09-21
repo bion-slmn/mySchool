@@ -18,7 +18,7 @@ const RegisterStudent = () => {
 
   // Update handleSubmit to use the correct form data
   let { handleSubmit, error } = useFormSubmit(
-    "http://localhost:8000/api/school/register-student/",
+    "api/school/register-student/",
     formData, // Pass formData directly
     () => {
       setSubmitted(true);
@@ -36,7 +36,7 @@ const RegisterStudent = () => {
   };
 
   const handleShowForm = async () => {
-    const url = "http://localhost:8000/api/school/view-all-grades/";
+    const url = "api/school/view-all-grades/";
 
     try {
       const [data, urlError] = await fetchData("GET", url);

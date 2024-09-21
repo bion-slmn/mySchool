@@ -22,7 +22,7 @@ const RegisterPayment = () => {
   const navigate = useNavigate();
 
   let { handleSubmit, error } = useFormSubmit(
-    "http://localhost:8000/api/school/create-payment/",
+    "api/school/create-payment/",
     formData, // Pass formData directly
     () => {
       setSubmitted(true);
@@ -39,7 +39,7 @@ const RegisterPayment = () => {
   };
 
   const handleShowForm = async () => {
-    const url = `http://localhost:8000/api/school/view-all-grades/`;
+    const url = `api/school/view-all-grades/`;
 
     try {
       const [data, urlError] = await fetchData("GET", url);
@@ -61,7 +61,7 @@ const RegisterPayment = () => {
     if (formData.grade) {
       const fetchStudent = async () => {
         try {
-          const url = `http://localhost:8000/api/school/students-in-grade/${formData.grade}/`;
+          const url = `api/school/students-in-grade/${formData.grade}/`;
           const [data, urlError] = await fetchData("GET", url);
           if (urlError) {
             throw new Error(urlError);
@@ -80,7 +80,7 @@ const RegisterPayment = () => {
     if (formData.grade) {
       const fetchFees = async () => {
         try {
-          const url = `http://localhost:8000/api/school/fees-in-grade/${formData.grade}/`;
+          const url = `api/school/fees-in-grade/${formData.grade}/`;
           const [data, urlError] = await fetchData("GET", url);
           if (urlError) {
             throw new Error(urlError);

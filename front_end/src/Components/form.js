@@ -8,7 +8,7 @@ const handleErrors = (response) => {
 
   if (response.status === 401) {
     window.location.href = "/login";
-    throw new Error("Please login First");
+    return;
   }
 };
 
@@ -91,9 +91,11 @@ export const HandleResult = ({ error }) => {
 export const fetchData = async (endpoint_method, endpoint) => {
   let data = null; // Initialize data to null
   let urlError = ""; // Initialize error message to an empty string
+  const url = "http://localhost:8000/" + endpoint;
+  console.log(url);
 
   try {
-    const response = await fetch(endpoint, {
+    const response = await fetch(url, {
       method: endpoint_method,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("sHule")}`,

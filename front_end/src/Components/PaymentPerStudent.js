@@ -14,7 +14,7 @@ const PaymentsPerStudent = () => {
     const fetchPaymentData = async () => {
       setIsLoading(true);
       try {
-        const url = `http://localhost:8000/api/school/payments-per-student/${feeId}/?student_id=${studentID}`;
+        const url = `api/school/payments-per-student/${feeId}/?student_id=${studentID}`;
         const [data, urlError] = await fetchData("GET", url);
         if (urlError) {
           console.error(urlError);

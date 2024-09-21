@@ -12,8 +12,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchFees = async () => {
       try {
-        const url =
-          "http://localhost:8000/api/school/percentage-fee-per-grade/";
+        const url = "api/school/percentage-fee-per-grade/";
         const [data, urlError] = await fetchData("GET", url);
         if (urlError) {
           throw new Error(urlError);
@@ -32,7 +31,7 @@ const Dashboard = () => {
     <div>
       <h2>Grades with fees</h2>
       <GradeandFees data={feeData} />
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p id="error">{error}</p>}
     </div>
   );
 };

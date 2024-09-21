@@ -12,7 +12,7 @@ const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const loginAction = async (data) => {
     try {
-      const response = await fetch("http://localhost:8000/api/user/login/", {
+      const response = await fetch("api/user/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

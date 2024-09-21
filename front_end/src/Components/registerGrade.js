@@ -9,7 +9,7 @@ const RegisterGrade = () => {
   const [submitted, setSubmitted] = useState(false);
 
   const { handleSubmit, error } = useFormSubmit(
-    "http://localhost:8000/api/school/create-grade/",
+    "api/school/create-grade/",
     { name, description },
     () => {
       setSubmitted(true);

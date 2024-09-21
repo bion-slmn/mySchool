@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate and useLocation
 import "../styles/login.css";
-import { useFormSubmit } from "../Components/form";
 import { useAuth } from "../Components/AuthProvider";
 
 const Button = ({ text }) => {
@@ -12,11 +11,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate(); // Initialize useNavigate
   const location = useLocation(); // Initialize useLocation
-
-  // Get the redirect location or default to /dashboard
-  const redirectPath = location.state?.from?.pathname || "/";
 
   const auth = useAuth();
   const handleSubmit = (e) => {
