@@ -13,7 +13,7 @@ const AuthProvider = ({ children }) => {
   const loginAction = async (data) => {
     try {
       const response = await fetch(
-        "https://myschool-ax55.onrender.com//api/user/login/",
+        "https://myschool-ax55.onrender.com/api/user/login/",
         {
           method: "POST",
           headers: {
@@ -23,6 +23,7 @@ const AuthProvider = ({ children }) => {
         }
       );
       const res = await response.json();
+      console.log(re, 2323)
       if (res.access) {
         const decoded = jwtDecode(res.access);
         console.log(decoded, "decoded");
