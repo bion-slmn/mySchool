@@ -15,6 +15,7 @@ const CreateFee = () => {
   const [grades, setGrades] = useState([]); // To store grades fetched from the API
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -27,9 +28,10 @@ const CreateFee = () => {
 
   const handleShowForm = async () => {
     const url = "api/school/view-all-grades/";
-
+    setIsLoading(true);
     try {
       const [data, urlError] = await fetchData("GET", url);
+      setIsLoading(false);
 
       if (urlError) {
         navigate("/login");
@@ -42,6 +44,10 @@ const CreateFee = () => {
       console.error("An unexpected error occurred:", err); // Handle unexpected errors
     }
   };
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   let { handleSubmit, error } = useFormSubmit(
     `api/school/create-fee/${formData.grade}/`,
