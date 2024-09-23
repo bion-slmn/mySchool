@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useFormSubmit, HandleResult, fetchData } from "./form";
 import { useState, useEffect } from "react";
 import "../styles/form.css";
+import SubmitButton from "./submitButton";
+import RotatingIcon from "./loadingIcon";
 
 const RegisterPayment = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +21,7 @@ const RegisterPayment = () => {
   const [grades, setGrades] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   let { handleSubmit, error } = useFormSubmit(
@@ -27,7 +30,8 @@ const RegisterPayment = () => {
     () => {
       setSubmitted(true);
     },
-    true
+    true,
+    setIsLoading
   );
 
   const handleInputChange = (e) => {
@@ -40,9 +44,11 @@ const RegisterPayment = () => {
 
   const handleShowForm = async () => {
     const url = `api/school/view-all-grades/`;
+    setIsLoading(true);
 
     try {
       const [data, urlError] = await fetchData("GET", url);
+      setIsLoading(false);
 
       if (urlError) {
         navigate("/login");
@@ -59,10 +65,12 @@ const RegisterPayment = () => {
 
   useEffect(() => {
     if (formData.grade) {
+      setIsLoading(true);
       const fetchStudent = async () => {
         try {
           const url = `api/school/students-in-grade/${formData.grade}/`;
           const [data, urlError] = await fetchData("GET", url);
+          setIsLoading(false);
           if (urlError) {
             throw new Error(urlError);
           }
@@ -78,10 +86,12 @@ const RegisterPayment = () => {
 
   useEffect(() => {
     if (formData.grade) {
+      setIsLoading(true);
       const fetchFees = async () => {
         try {
           const url = `api/school/fees-in-grade/${formData.grade}/`;
           const [data, urlError] = await fetchData("GET", url);
+          setIsLoading(false);
           if (urlError) {
             throw new Error(urlError);
           }
@@ -99,9 +109,14 @@ const RegisterPayment = () => {
   return (
     <div className="StudentRegister">
       <h2>Register a Payment</h2>
-      <span className="menu payment" onClick={handleShowForm}>
-        Click to register a payment
-      </span>
+      <button
+        className="menu payment"
+        onClick={handleShowForm}
+        disabled={isLoading}
+      >
+        Click to register a payment&nbsp;&nbsp;&nbsp;
+        {isLoading && <RotatingIcon />}
+      </button>
 
       {showForm && (
         <form onSubmit={handleSubmit} className="StudentForm">
@@ -179,7 +194,7 @@ const RegisterPayment = () => {
             onChange={handleInputChange}
             required
           />
-          <button type="submit">Register Payment</button>
+          <SubmitButton text="Register Payment" isLoading={isLoading} />
         </form>
       )}
 

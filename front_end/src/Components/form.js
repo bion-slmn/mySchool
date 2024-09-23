@@ -16,7 +16,8 @@ export const useFormSubmit = (
   endpoint,
   payload,
   onSuccess = () => {},
-  includeAuth = false
+  includeAuth = false,
+  setIsLoading = () => {}
 ) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -26,6 +27,8 @@ export const useFormSubmit = (
     const url = "https://myschool-ax55.onrender.com/" + endpoint;
 
     try {
+      setIsLoading(true); // Start loading when the form is submitted
+
       const headers = {
         "Content-Type": "application/json",
       };
@@ -46,14 +49,13 @@ export const useFormSubmit = (
         navigate("/login");
       }
 
-      // If the response status is 403 (Forbidden), throw a specific error message
+      // Handle 403 Forbidden status
       if (response.status === 403) {
         throw new Error("You must be the ADMIN to perform this action.");
       }
 
-      // If the response status is not ok, throw a general error with the detail from the response
+      // Handle other errors
       if (!response.ok) {
-        console.log(data, 1212121212);
         throw new Error(data || "An error occurred.");
       }
 
@@ -65,6 +67,8 @@ export const useFormSubmit = (
       onSuccess(); // Call the success callback
     } catch (error) {
       setError(error.message);
+    } finally {
+      setIsLoading(false); // Stop loading after submission
     }
   };
 

@@ -1,0 +1,17 @@
+.rotate_div{
+    display: inline;
+}
+
+.rotate {
+    animation: rotation 2s infinite linear; /* Adjust duration and timing function */
+  }
+  
+  @keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  

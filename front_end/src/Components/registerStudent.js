@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useFormSubmit, HandleResult, fetchData } from "./form";
 import { useState } from "react";
 import "../styles/form.css";
+import SubmitButton from "./submitButton";
+import RotatingIcon from "./loadingIcon";
 
 const RegisterStudent = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +16,7 @@ const RegisterStudent = () => {
   const [grades, setGrades] = useState([]); // To store grades fetched from the API
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   // Update handleSubmit to use the correct form data
@@ -23,7 +26,8 @@ const RegisterStudent = () => {
     () => {
       setSubmitted(true);
     },
-    true
+    true,
+    setIsLoading
   );
 
   // Update formData state on input change
@@ -37,9 +41,11 @@ const RegisterStudent = () => {
 
   const handleShowForm = async () => {
     const url = "api/school/view-all-grades/";
+    setIsLoading(true);
 
     try {
       const [data, urlError] = await fetchData("GET", url);
+      setIsLoading(false);
 
       if (urlError) {
         navigate("/login");
@@ -56,8 +62,13 @@ const RegisterStudent = () => {
   return (
     <div className="Register">
       <h2>Register a student</h2>
-      <button className="menu student" onClick={handleShowForm}>
-        Click to register a student
+      <button
+        className="menu student"
+        onClick={handleShowForm}
+        disabled={isLoading}
+      >
+        Click to register a student&nbsp;&nbsp;&nbsp;
+        {isLoading && <RotatingIcon />}
       </button>
 
       {/* Conditionally render the form based on state */}
@@ -105,7 +116,7 @@ const RegisterStudent = () => {
               </option>
             ))}
           </select>
-          <button type="submit">Register Student</button> {/* Submit button */}
+          <SubmitButton text="Register Student" isLoading={isLoading} />
         </form>
       )}
 

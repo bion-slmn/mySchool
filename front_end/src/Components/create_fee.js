@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useFormSubmit, HandleResult, fetchData } from "./form";
 import { useState } from "react";
+import RotatingIcon from "./loadingIcon";
 import "../styles/form.css";
+import SubmitButton from "./submitButton";
 
 const CreateFee = () => {
   const [formData, setFormData] = useState({
@@ -30,7 +32,6 @@ const CreateFee = () => {
     const url = "api/school/view-all-grades/";
     setIsLoading(true);
     try {
-      console.log(isLoading, "the loading status...............");
       const [data, urlError] = await fetchData("GET", url);
       setIsLoading(false);
 
@@ -59,7 +60,8 @@ const CreateFee = () => {
     <div className="createfee">
       <h2>Create a fee</h2>
       <button className="menu fee" onClick={handleShowForm}>
-        Click to create a Fee {isLoading && <span>Loading...</span>}
+        Click to create a Fee&nbsp;&nbsp;&nbsp;
+        {isLoading && <RotatingIcon />}
       </button>
 
       {showForm && (
@@ -112,10 +114,9 @@ const CreateFee = () => {
             onChange={handleInputChange}
             required
           />
-          <button type="submit">Create A Fee</button>
+          <SubmitButton text="Create Fee" isLoading={isLoading} />
         </form>
       )}
-      {isLoading && <p>Loading...</p>}
       {submitted && <HandleResult error={error} />}
     </div>
   );

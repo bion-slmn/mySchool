@@ -1,30 +1,31 @@
 import { useState } from "react";
 import { useFormSubmit } from "./form";
 import "../styles/form.css";
+import SubmitButton from "./submitButton";
 
 const RegisterSchool = () => {
   const [school, setSchool] = useState("");
   const [address, setAddress] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // State for loading
 
   const { handleSubmit, error } = useFormSubmit(
     "api/school/create-school/",
     { school, address },
     () => {
-      // Handle successful login, e.g., redirect or update UI
+      setIsLoading(false); // Stop loading when the form is successfully submitted
     },
-    true
+    true,
+    setIsLoading
   );
 
   return (
     <div className="SchoolRegister">
       <h2>Register a School</h2>
-      {/* Button to toggle form visibility */}
       <button onClick={() => setShowForm(!showForm)} className="menu school">
         Click to add a school
       </button>
 
-      {/* Conditionally render the form based on state */}
       {showForm && (
         <form onSubmit={handleSubmit} className="SchoolForm">
           <label>School Name</label>
@@ -43,7 +44,7 @@ const RegisterSchool = () => {
             onChange={(e) => setAddress(e.target.value)}
             required
           />
-          <button type="submit">Register</button> {/* Submit button */}
+          <SubmitButton text="Register" isLoading={isLoading} />
         </form>
       )}
 
