@@ -30,6 +30,7 @@ const CreateFee = () => {
     const url = "api/school/view-all-grades/";
     setIsLoading(true);
     try {
+      console.log(isLoading, "the loading status...............");
       const [data, urlError] = await fetchData("GET", url);
       setIsLoading(false);
 
