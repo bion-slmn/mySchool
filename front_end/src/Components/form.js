@@ -46,7 +46,9 @@ export const useFormSubmit = (
       });
 
       const data = await response.json();
+
       if (response.status === 401) {
+        console.log("failed to login............");
         localStorage.setItem("sHule", "");
         navigate("/login");
       }

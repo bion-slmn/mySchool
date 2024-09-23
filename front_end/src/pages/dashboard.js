@@ -3,17 +3,21 @@ import { fetchData } from "../Components/form";
 import FeeAndPayment from "../Components/FeeAndPayment";
 import GradeandFees from "../Components/GradeandFees";
 import { useNavigate } from "react-router-dom";
+import { PageLoading } from "../Components/loadingIcon";
 
 const Dashboard = () => {
   const [feeData, setFeeData] = useState([]);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFees = async () => {
+      setIsLoading(true);
       try {
         const url = "api/school/percentage-fee-per-grade/";
         const [data, urlError] = await fetchData("GET", url);
+        setIsLoading(false);
         if (urlError) {
           throw new Error(urlError);
         }
@@ -25,12 +29,18 @@ const Dashboard = () => {
     };
 
     fetchFees();
+    console.log(feeData, "feeData");
   }, []);
 
   return (
     <div>
       <h2>Grades with fees</h2>
-      <GradeandFees data={feeData} />
+      {isLoading && <PageLoading />}
+      {feeData.length ? (
+        <GradeandFees data={feeData} />
+      ) : (
+        <p>No data on fees and payments</p>
+      )}
       {error && <p id="error">{error}</p>}
     </div>
   );

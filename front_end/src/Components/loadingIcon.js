@@ -9,4 +9,12 @@ const RotatingIcon = () => {
   );
 };
 
+export const PageLoading = () => {
+  return (
+    <div className="rotate_div">
+      <GiAbstract076 className="rotate" size={80} color="green" />{" "}
+    </div>
+  );
+};
+
 export default RotatingIcon;

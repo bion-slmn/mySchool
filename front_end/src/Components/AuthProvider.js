@@ -26,13 +26,17 @@ const AuthProvider = ({ children }) => {
     status_code = response.status;
     const res = await response.json();
     if (res.access) {
-      const decoded = jwtDecode(res.access);
-      console.log(decoded, "decoded", 222222222);
-      setUser(decoded);
+      const decoded_user = jwtDecode(res.access);
+      console.log(decoded_user, "decoded", 222222222);
+      setUser(decoded_user);
       setToken(res.access);
       localStorage.setItem("sHule", res.access);
+      localStorage.setItem("sHule_user", JSON.stringify(decoded_user));
+
       navigate("/dashboard");
+      return;
     }
+    console.log(232323232, response);
     localStorage.setItem("sHule", "");
     throw new Error(res.detail);
   };

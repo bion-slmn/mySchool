@@ -6,15 +6,16 @@ import { useAuth } from "./AuthProvider";
 
 const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [schoolUser, setSchoolUser] = useState({});
   const navigate = useNavigate();
   const user = useAuth();
   // Check localStorage when the component mounts
   useEffect(() => {
     if (user.token) {
       setIsLoggedIn(true);
-      console.log(user.user.school, "school");
+      setSchoolUser(JSON.parse(localStorage.getItem("sHule_user")));
     }
-  }, []);
+  }, [isLoggedIn]);
 
   const handleLogin = () => {
     // Logic to log in the user
@@ -36,8 +37,7 @@ const NavBar = () => {
       <div className="navbar-right">
         {isLoggedIn ? (
           <>
-            <p>{user.user.name || ""}</p>
-            <p>{user.user.school || ""}</p>
+            <p>{schoolUser.school}</p>
             <button onClick={handleLogout} className="user-icon">
               Logout
             </button>
