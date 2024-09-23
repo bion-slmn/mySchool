@@ -58,7 +58,7 @@ const CreateFee = () => {
     <div className="createfee">
       <h2>Create a fee</h2>
       <button className="menu fee" onClick={handleShowForm}>
-        Click to create a Fee
+        Click to create a Fee {isLoading && <span>Loading...</span>}
       </button>
 
       {showForm && (
