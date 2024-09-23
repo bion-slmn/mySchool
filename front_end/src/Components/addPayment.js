@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import "../styles/form.css";
 import SubmitButton from "./submitButton";
 import RotatingIcon from "./loadingIcon";
+import Error from "./error";
 
 const RegisterPayment = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +23,7 @@ const RegisterPayment = () => {
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   let { handleSubmit, error } = useFormSubmit(
@@ -51,15 +53,16 @@ const RegisterPayment = () => {
       setIsLoading(false);
 
       if (urlError) {
-        navigate("/login");
-        error = urlError;
+        setErrorMessage(urlError);
       } else {
         console.log(data); // Check data and urlError
         setGrades(data);
-        setShowForm(!showForm); // Set showForm to true after grades are fetched
+        setShowForm(!showForm);
+        setErrorMessage("");
       }
     } catch (err) {
       console.error("An unexpected error occurred:", err);
+      setErrorMessage("");
     }
   };
 
@@ -72,11 +75,12 @@ const RegisterPayment = () => {
           const [data, urlError] = await fetchData("GET", url);
           setIsLoading(false);
           if (urlError) {
-            throw new Error(urlError);
+            setErrorMessage(urlError);
           }
           setStudents(data);
         } catch (err) {
           console.error(err);
+          setErrorMessage("");
         }
       };
 
@@ -93,7 +97,7 @@ const RegisterPayment = () => {
           const [data, urlError] = await fetchData("GET", url);
           setIsLoading(false);
           if (urlError) {
-            throw new Error(urlError);
+            setErrorMessage(urlError);
           }
 
           setFees(data);
@@ -117,7 +121,7 @@ const RegisterPayment = () => {
         Click to register a payment&nbsp;&nbsp;&nbsp;
         {isLoading && <RotatingIcon />}
       </button>
-
+      {errorMessage && <Error error={errorMessage} />}
       {showForm && (
         <form onSubmit={handleSubmit} className="StudentForm">
           <label>Grade</label>

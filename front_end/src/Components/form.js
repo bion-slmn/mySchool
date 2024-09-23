@@ -26,6 +26,7 @@ export const useFormSubmit = (
   const handleSubmit = async (event) => {
     event.preventDefault();
     const url = "https://myschool-ax55.onrender.com/" + endpoint;
+    let result;
 
     try {
       setIsLoading(true); // Start loading when the form is submitted
@@ -46,6 +47,8 @@ export const useFormSubmit = (
       });
 
       const data = await response.json();
+      result = data;
+      console.log(result, 1111111111111);
 
       if (response.status === 401) {
         console.log("failed to login............");
@@ -60,6 +63,7 @@ export const useFormSubmit = (
 
       // Handle other errors
       if (!response.ok) {
+        console.log(data, 2222222222);
         throw new Error(data || "An error occurred.");
       }
 
@@ -69,6 +73,7 @@ export const useFormSubmit = (
 
       setError("");
       onSuccess(); // Call the success callback
+      return data;
     } catch (error) {
       setError(error.message);
     } finally {

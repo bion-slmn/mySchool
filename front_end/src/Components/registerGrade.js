@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useFormSubmit, HandleResult } from "./form";
 import "../styles/form.css";
 import SubmitButton from "./submitButton";
-import RotatingIcon from "./loadingIcon";
+import Error from "./error";
 
 const RegisterGrade = () => {
   const [name, setName] = useState("");
@@ -10,12 +10,14 @@ const RegisterGrade = () => {
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState("");
 
   const { handleSubmit, error } = useFormSubmit(
     "api/school/create-grade/",
     { name, description },
     () => {
       setSubmitted(true);
+      setErrors("");
     },
     true,
     setIsLoading
@@ -54,7 +56,7 @@ const RegisterGrade = () => {
           <SubmitButton text="Add the Grade" isLoading={isLoading} />
         </form>
       )}
-
+      {error && <Error error={error} />}
       {submitted && <HandleResult error={error} />}
     </div>
   );

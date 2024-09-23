@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { fetchData } from "../Components/form";
-import FeeAndPayment from "../Components/FeeAndPayment";
+import Error from "../Components/error";
 import GradeandFees from "../Components/GradeandFees";
 import { useNavigate } from "react-router-dom";
 import { PageLoading } from "../Components/loadingIcon";
@@ -19,7 +19,9 @@ const Dashboard = () => {
         const [data, urlError] = await fetchData("GET", url);
         setIsLoading(false);
         if (urlError) {
-          throw new Error(urlError);
+          setError(urlError);
+          console.log(urlError);
+          return;
         }
         setFeeData(data);
       } catch (err) {
@@ -41,7 +43,7 @@ const Dashboard = () => {
       ) : (
         <p>No data on fees and payments</p>
       )}
-      {error && <p id="error">{error}</p>}
+      {error && <Error error={error} />}
     </div>
   );
 };

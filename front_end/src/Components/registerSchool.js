@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useFormSubmit } from "./form";
 import "../styles/form.css";
 import SubmitButton from "./submitButton";
+import Error from "./error";
 
 const RegisterSchool = () => {
   const [school, setSchool] = useState("");
@@ -49,7 +50,7 @@ const RegisterSchool = () => {
       )}
 
       {/* Display error message if error exists */}
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {error && <Error error={error} />}
     </div>
   );
 };

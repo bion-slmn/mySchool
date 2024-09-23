@@ -17,6 +17,7 @@ const RegisterStudent = () => {
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   // Update handleSubmit to use the correct form data
@@ -48,14 +49,16 @@ const RegisterStudent = () => {
       setIsLoading(false);
 
       if (urlError) {
-        navigate("/login");
+        setErrorMessage(urlError);
       } else {
         console.log(data); // Check data and urlError
         setGrades(data); // Set the fetched grades in the grades state variable
-        setShowForm(!showForm); // Show the form
+        setShowForm(!showForm);
+        setErrorMessage("");
       }
     } catch (err) {
-      console.error("An unexpected error occurred:", err); // Handle unexpected errors
+      console.error("An unexpected error occurred:", err);
+      setErrorMessage(err);
     }
   };
 
@@ -70,6 +73,7 @@ const RegisterStudent = () => {
         Click to register a student&nbsp;&nbsp;&nbsp;
         {isLoading && <RotatingIcon />}
       </button>
+      {errorMessage && <p>{errorMessage}</p>}
 
       {/* Conditionally render the form based on state */}
       {showForm && (
