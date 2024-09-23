@@ -45,10 +45,6 @@ const CreateFee = () => {
     }
   };
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
   let { handleSubmit, error } = useFormSubmit(
     `api/school/create-fee/${formData.grade}/`,
     formData, // Pass formData directly
@@ -118,6 +114,7 @@ const CreateFee = () => {
           <button type="submit">Create A Fee</button>
         </form>
       )}
+      {isLoading && <p>Loading...</p>}
       {submitted && <HandleResult error={error} />}
     </div>
   );
