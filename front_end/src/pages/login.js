@@ -1,26 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate and useLocation
 import "../styles/login.css";
 import { useAuth } from "../Components/AuthProvider";
-
-const Button = ({ text }) => {
-  return <button type="submit">{text}</button>;
-};
+import SubmitButton from "../Components/submitButton";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation(); // Initialize useLocation
-
   const auth = useAuth();
-  const handleSubmit = (e) => {
+
+  useEffect(() => {
+    console.log(isLoading, "Loading state changed");
+  }, [isLoading]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submiting a login form, email:", email, "password:", password);
+    setIsLoading(true);
     if (email && password) {
-      auth.loginAction({ email, password });
+      try {
+        await auth.loginAction({ email, password }); // Await the login action
+      } catch (error) {
+        console.error(error);
+        alert("Login failed: " + error.message);
+      } finally {
+        setIsLoading(false); // Set loading to false after login attempt
+      }
     } else {
-      alert("please provide a valid input");
+      setIsLoading(false);
+      alert("Please provide a valid input");
     }
   };
 
@@ -45,7 +54,7 @@ function Login() {
           required
           autoComplete="current-password"
         />
-        <Button text="Login" />
+        <SubmitButton text="Login" isLoading={isLoading} />
       </form>
     </div>
   );

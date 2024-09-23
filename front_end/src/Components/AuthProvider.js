@@ -11,33 +11,30 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("sHule") || "");
   const navigate = useNavigate();
   const loginAction = async (data) => {
-    try {
-      const response = await fetch(
-        "https://myschool-ax55.onrender.com/api/user/login/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      const res = await response.json();
-      console.log(res, 2323);
-      if (res.access) {
-        const decoded = jwtDecode(res.access);
-        console.log(decoded, "decoded", 222222222);
-        setUser(decoded);
-        setToken(res.access);
-        localStorage.setItem("sHule", res.access);
-        navigate("/dashboard");
-        return;
+    let status_code;
+
+    const response = await fetch(
+      "https://myschool-ax55.onrender.com/api/user/login/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       }
-      throw new Error(res.message);
-    } catch (err) {
-      console.error(err);
-      alert(err);
+    );
+    status_code = response.status;
+    const res = await response.json();
+    if (res.access) {
+      const decoded = jwtDecode(res.access);
+      console.log(decoded, "decoded", 222222222);
+      setUser(decoded);
+      setToken(res.access);
+      localStorage.setItem("sHule", res.access);
+      navigate("/dashboard");
     }
+    localStorage.setItem("sHule", "");
+    throw new Error(res.detail);
   };
 
   const logOut = () => {

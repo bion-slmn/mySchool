@@ -7,6 +7,7 @@ const handleErrors = (response) => {
   }
 
   if (response.status === 401) {
+    localStorage.setItem("sHule", "");
     window.location.href = "/login";
     return;
   }
@@ -46,6 +47,7 @@ export const useFormSubmit = (
 
       const data = await response.json();
       if (response.status === 401) {
+        localStorage.setItem("sHule", "");
         navigate("/login");
       }
 
