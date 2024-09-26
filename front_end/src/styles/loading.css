@@ -5,6 +5,15 @@
 .rotate {
     animation: rotation 2s infinite linear; /* Adjust duration and timing function */
   }
+
+  .rotate_div_page {
+    display: flex;
+    justify-content: center;  /* Horizontally center */
+    align-items: center;      /* Vertically center */
+    height: 90vh;
+
+  }
+  
   
   @keyframes rotation {
     from {
