@@ -1,44 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fetchData } from "./form";
-
-import React, { useState, useEffect } from "react";
+import { PageLoading } from "./loadingIcon";
+import { useNavigate, useParams } from "react-router-dom";
 
 const SearchBar = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [triggerSearch, setTriggerSearch] = useState(false); // To trigger search on Enter
-
-  useEffect(() => {
-    const fetchSearch = async () => {
-      if (searchInput.trim() === "") {
-        return;
-      }
-
-      try {
-        const url = `api/school/search/?search=${searchInput}`;
-        const [data, error] = await fetchData("GET", url);
-        if (error) {
-          console.log(error);
-          return;
-        }
-        console.log(data, "data");
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    if (triggerSearch) {
-      fetchSearch();
-      setTriggerSearch(false); // Reset trigger after search
-    }
-  }, [triggerSearch, searchInput]);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setSearchInput(e.target.value); // Update the search input value
+    setSearchInput(e.target.value);
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      setTriggerSearch(true); // Trigger the search when Enter is pressed
+    if (e.key === "Enter" && searchInput) {
+      navigate(`/searchResult/${searchInput}`);
     }
   };
 
@@ -51,6 +26,67 @@ const SearchBar = () => {
         onChange={handleChange}
         onKeyUp={handleKeyPress} // Listen for Enter key press
       />
+    </div>
+  );
+};
+
+export const SearchResults = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const { searchInput } = useParams();
+  useEffect(() => {
+    const fetchSearch = async () => {
+      setIsLoading(true);
+      try {
+        const url = `api/school/search/?search=${searchInput}`;
+        const [data, error] = await fetchData("GET", url);
+        setIsLoading(false);
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setSearchResults(data);
+        console.log(data, "data");
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchSearch();
+  }, []);
+
+  const handleClick = (id) => {
+    console.log(id);
+  };
+
+  return (
+    <div className="feecontainer">
+      {isLoading && <PageLoading />}
+
+      <table className="searchresult-table">
+        <caption>Results for {searchInput}</caption>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Grade </th>
+            <th>Gender</th>
+          </tr>
+        </thead>
+        <tbody>
+          {searchResults.map((student) => (
+            <tr
+              key={student.id}
+              onClick={() => {
+                handleClick(student.id);
+              }}
+            >
+              <td data-label="Student Name">{student.name}</td>
+              <td data-label="Grade">{student.grade_name}</td>
+              <td data-label="Gender">{student.gender}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
