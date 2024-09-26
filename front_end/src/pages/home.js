@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import "../styles/home.css";
 import SearchBar from "../Components/searchBar";
+import { Greeting } from "./greeting";
 
 function Home() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -14,18 +15,22 @@ function Home() {
   return (
     <div className="home-container">
       <header className="home-header">
+        <Greeting />
         <h1 className="home-title">Manage Your School Finances Easily</h1>
         <p className="home-subtitle">
           Keep track of your students' and teachers' financial records with ease
           and accuracy.
         </p>
+        <SearchBar />
       </header>
-      <SearchBar />
 
       <section className="home-actions">
+        <Link to="/dashboard" className="home-link secondary">
+          Go to Dashboard
+        </Link>
         <div className="dropdown">
           <button onClick={handleDropdownToggle} className="home-link">
-            Register ...
+            Register ......
           </button>
           {isDropdownOpen && (
             <div className="dropdown-menu">
@@ -48,10 +53,6 @@ function Home() {
             </div>
           )}
         </div>
-
-        <Link to="/dashboard" className="home-link secondary">
-          Go to Dashboard
-        </Link>
       </section>
     </div>
   );
