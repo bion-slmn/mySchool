@@ -6,11 +6,11 @@ const ProgressBar = (props) => {
   let bgcolor;
 
   if (completed <= 30) {
-    bgcolor = "red";
+    bgcolor = "#E92727";
   } else if (completed > 30 && completed <= 60) {
     bgcolor = "orange";
   } else {
-    bgcolor = "green";
+    bgcolor = "#30CB00";
   }
 
   return (

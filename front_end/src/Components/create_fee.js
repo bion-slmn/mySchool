@@ -78,7 +78,7 @@ const CreateFee = () => {
           <input
             type="text"
             name="name"
-            placeholder="Student Name"
+            placeholder="Enter fee name e.g. Class 1 term 1 fee"
             value={formData.name}
             onChange={handleInputChange}
             required
