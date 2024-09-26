@@ -3,6 +3,7 @@ import { fetchData } from "./form";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../styles/table.css";
+import { PageLoading } from "./loadingIcon";
 
 const FeeAndPayment = () => {
   const { feeId, feeName, feeToPay } = useParams();
@@ -19,7 +20,7 @@ const FeeAndPayment = () => {
     const fetchFeeData = async () => {
       setIsLoading(true);
       try {
-        const url = `http://localhost:8000/api/school/payment-on-fee/${feeId}/`;
+        const url = `api/school/payment-on-fee/${feeId}/`;
         const [data, urlError] = await fetchData("GET", url);
         if (urlError) {
           navigate("/login");
@@ -40,7 +41,7 @@ const FeeAndPayment = () => {
   }, [feeId]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <PageLoading />;
   }
 
   if (error) {

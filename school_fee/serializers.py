@@ -27,12 +27,14 @@ class GradeSerializer(BaseSerializer):
         model = Grade
         fields = '__all__'
 
-class StudentSerializer(BaseSerializer):
-    date_of_birth = serializers.DateTimeField(format="%Y-%m-%d")
+class StudentSerializer(serializers.ModelSerializer):
     gender = serializers.CharField()
+    grade_name = serializers.CharField(source='grade.name', read_only=True)  # Fetch the grade's name directly
+
     class Meta:
         model = Student
-        fields = '__all__'
+        exclude = ['school', 'updated_at']
+        extra_fields = ['grade_name']
 
 
     def validate_gender(self, value):

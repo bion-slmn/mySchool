@@ -3,6 +3,7 @@ import { fetchData } from "./form";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import "../styles/table.css";
+import { PageLoading } from "./loadingIcon";
 
 const PaymentsPerStudent = () => {
   const { feeId, studentID, feeName } = useParams();
@@ -34,7 +35,7 @@ const PaymentsPerStudent = () => {
   }, [feeId, studentID]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <PageLoading />;
   }
 
   if (error) {
@@ -52,7 +53,9 @@ const PaymentsPerStudent = () => {
 
   return (
     <div className="feecontainer">
-      <h3>Payments for {feeName}</h3>
+      <h3>
+        School Fee Payments for {feeName} by {data[0]?.student_name}
+      </h3>
       <h4>Total amount: Kshs {totalAmount.toFixed(2)}</h4>{" "}
       {/* Display total amount */}
       <table className="payment-table">

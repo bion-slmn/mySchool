@@ -5,23 +5,26 @@ from rest_framework.response import Response
 from ..decorator import handle_exceptions
 from django.shortcuts import get_object_or_404
 from ..serializers import StudentSerializer
+from rest_framework.permissions import AllowAny
+
 
 
 class SearchView(APIView):
+    permission_classes = [AllowAny]
     @handle_exceptions
     def get(self, request: HttpRequest) -> Response:
-        search_param = request.query_params.get('q')
+        search_param = request.query_params.get('search')
 
         if not search_param:
-            return Response({"error": "Missing query parameter 'q'"}, status=400)
-        if students := Student.objects.filter(name__icontains=search_param).values(
-            'name', 'id'
-        ):
+            return Response({"error": "Missing query parameter 'search'"}, status=400)
+        if students := Student.objects.filter(name__icontains=search_param):
+            students = StudentSerializer(students, many=True).data
             return Response(students)
 
-        raise Http404(f'No student has a name matching "{search_param}"')
+        raise Http404(f'No student has a name matching {search_param}')
 
 class GetDetailView(APIView):
+    permission_classes = [AllowAny]
     @handle_exceptions
     def get(self, request: HttpRequest) -> Response:
         search_id = request.query_params.get("id")
@@ -29,11 +32,14 @@ class GetDetailView(APIView):
             Student.objects.prefetch_related("fees__payments"), id=search_id)
         student_info = StudentSerializer(student)
         student_info = student_info.data
-        student_info["payment_info"] = self.get_payment_info(student)
+        payment_info = self.get_payment_info(student)
+        print(payment_info, 111)
+        student_info["payment_info"] = payment_info
         return Response(student_info)
         
     def get_payment_info(self, student):
-        payment_info = []
+        print(student.fees.all(), 222)
+        payment_info = {}
         for fee in student.fees.all():
             payment_info[fee.name] = {"total": 0, "payments": []}
             for payment in fee.payments.all():

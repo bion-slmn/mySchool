@@ -33,6 +33,6 @@ urlpatterns = [
     path('payments-per-student/<str:fee_id>/', PaymentPerStudent.as_view()),
 
     # search routes
-    path('search-student/', SearchView.as_view()),
+    path('search/', SearchView.as_view()),
     path('get-student-detail/', GetDetailView.as_view()),
 ]

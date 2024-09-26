@@ -37,7 +37,7 @@ const NavBar = () => {
       <div className="navbar-right">
         {isLoggedIn ? (
           <>
-            <p>{schoolUser.school}</p>
+            <p>{schoolUser.school || "Add school"}</p>
             <button onClick={handleLogout} className="user-icon">
               Logout
             </button>

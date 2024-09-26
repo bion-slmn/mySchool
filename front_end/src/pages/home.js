@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import "../styles/home.css";
+import SearchBar from "../Components/searchBar";
 
 function Home() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -19,6 +20,7 @@ function Home() {
           and accuracy.
         </p>
       </header>
+      <SearchBar />
 
       <section className="home-actions">
         <div className="dropdown">

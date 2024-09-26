@@ -1,4 +1,3 @@
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,8 +67,8 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 ### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-=======
+# This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
 ## CREATE AN ADMIN
 
 curl localhost:8000/api/user/register-admin/ -X POST -H 'Content-Type: application/json' -d '{"email": "bonfire@gmail.com", "role": "admin", "password": "newpassword123"}'
@@ -120,7 +119,33 @@ curl "http://localhost:8000/api/school/create-fee/2cb7351f-e606-4ada-a2c5-1286e9
 "students": []
 }
 
-
 # make a payment
- curl -X POST http://localhost:8000/api/school/create-payment/ -H "Content-Type: application/json" -d '{"student": "83c33d8a-456b-4f83-81fa-ebf6361218ea", "fee": "aa048e34-9602-4712-871d-165a6b2cc960", "amount": "210.00", "date_paid": "2024-08-29", "payment_method": "mpesa", "reference_number": "1234"}
 
+curl -X POST http://localhost:8000/api/school/create-payment/ -H "Content-Type: application/json" -d '{"student": "83c33d8a-456b-4f83-81fa-ebf6361218ea", "fee": "aa048e34-9602-4712-871d-165a6b2cc960", "amount": "210.00", "date_paid": "2024-08-29", "payment_method": "mpesa", "reference_number": "1234"}
+
+# get details of a student
+
+curl localhost:8000/api/school/get-student-detail/?id=ef0c3271-a30c-4ed0-aba1-535e7277226f | jq
+
+```
+{
+  "id": "ef0c3271-a30c-4ed0-aba1-535e7277226f",
+  "gender": "female",
+  "grade_name": "Baby",
+  "created_at": "2024-09-23T17:15:34.054135Z",
+  "name": "Avy",
+  "date_of_birth": "2024-09-05",
+  "grade": "e0eb028e-68ce-4a51-9bd0-b6a606d1ea8c",
+  "payment_info": {
+    "Term 3 baby class fee": {
+      "total": 250,
+      "payments": [
+        {
+          "amount": 250,
+          "date": "2024-09-23T17:18:19.831811Z"
+        }
+      ]
+    }
+  }
+}
+```

@@ -15,4 +15,5 @@
     max-width: 30%;
     margin: auto;
     animation: shake 0.5s;
+    border-radius: 6px;
 }

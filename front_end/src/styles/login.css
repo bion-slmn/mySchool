@@ -59,3 +59,16 @@
     line-height: 42px;
     text-align: center;
 }
+
+.user-icon{
+  border: 1px solid whitesmoke;
+  border-radius: 6px;
+  background-color: green;
+  color: white;
+  padding: 5px 8px;
+}
+
+.user-icon:hover{
+  background-color: white;
+  color: green;
+}
