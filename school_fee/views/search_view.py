@@ -21,7 +21,7 @@ class SearchView(APIView):
             students = StudentSerializer(students, many=True).data
             return Response(students)
 
-        return Response(f'No student has a name matching {search_param}')
+        return Response([])
 
 class GetDetailView(APIView):
     permission_classes = [AllowAny]
