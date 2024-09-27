@@ -23,7 +23,7 @@ const SearchBar = () => {
     <div className="searchbar">
       <input
         type="text"
-        placeholder="Search..."
+        placeholder="Search for student by name..."
         value={searchInput}
         onChange={handleChange}
         onKeyUp={handleKeyPress} // Listen for Enter key press
@@ -79,7 +79,7 @@ export const SearchResults = () => {
   }
 
   return (
-    <div className="feecontainer">
+    <div className="feecontainer" style={{ marginTop: "20px" }}>
       <SearchBar />
       {isLoading && <PageLoading />}
 
