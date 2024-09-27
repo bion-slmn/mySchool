@@ -42,7 +42,10 @@ function App() {
               path="/payments/:feeName/:feeId/:studentID"
               element={<PaymentsPerStudent />}
             />
-            <Route path="/searchResult/:searchInput" element={SearchResults} />
+            <Route
+              path="/searchResult/:searchInput"
+              element={<SearchResults />}
+            />
           </Route>
         </Routes>
       </div>

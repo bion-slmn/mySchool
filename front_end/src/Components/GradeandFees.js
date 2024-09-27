@@ -6,11 +6,17 @@ import ProgressBar from "./progressBar";
 const GradeandFees = ({ data }) => {
   const navigate = useNavigate();
 
-  const handleCardClick = (feeId, feeName, feeToPay) => {
-    navigate(`/fee/${feeName}/${feeId}/${feeToPay}`);
+  const handleCardClick = (feeId, feeName, feeToPay, total_students) => {
+    if (total_students) {
+      navigate(`/fee/${feeName}/${feeId}/${feeToPay}`);
+    }
   };
 
   const calculatePercentage = (fee) => {
+    if (fee.total_students === 0) {
+      return "0.00";
+    }
+
     return (
       (fee.fees__total_paid / (fee.fees__total_amount * fee.total_students)) *
       100
@@ -32,7 +38,8 @@ const GradeandFees = ({ data }) => {
                     handleCardClick(
                       fee.fees__id,
                       fee.fees__name,
-                      fee.fees__total_amount
+                      fee.fees__total_amount,
+                      fee.total_students
                     )
                   }
                 >

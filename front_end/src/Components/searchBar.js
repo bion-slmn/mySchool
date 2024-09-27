@@ -9,6 +9,7 @@ const SearchBar = () => {
 
   const handleChange = (e) => {
     setSearchInput(e.target.value);
+    console.log(e.target.value, 121212);
   };
 
   const handleKeyPress = (e) => {
@@ -33,8 +34,11 @@ const SearchBar = () => {
 export const SearchResults = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [error, setError] = useState("");
   const { searchInput } = useParams();
+
   useEffect(() => {
+    console.log(searchInput, 121212);
     const fetchSearch = async () => {
       setIsLoading(true);
       try {
@@ -43,6 +47,7 @@ export const SearchResults = () => {
         setIsLoading(false);
         if (error) {
           console.log(error);
+          setError(error);
           return;
         }
         setSearchResults(data);
@@ -59,10 +64,13 @@ export const SearchResults = () => {
     console.log(id);
   };
 
+  if (error) {
+    return <p>Error</p>;
+  }
+
   return (
     <div className="feecontainer">
       {isLoading && <PageLoading />}
-
       <table className="searchresult-table">
         <caption>Results for {searchInput}</caption>
         <thead>
