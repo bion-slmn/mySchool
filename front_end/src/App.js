@@ -16,6 +16,7 @@ import RegisterPayment from "./Components/addPayment.js";
 import AuthProvider from "./Components/AuthProvider.js";
 import PrivateRoute from "./Components/PrivateRoute.js";
 import { SearchResults } from "./Components/searchBar.js";
+import { GetPaymentDetails } from "./Components/searchBar.js";
 
 function App() {
   return (
@@ -45,6 +46,10 @@ function App() {
             <Route
               path="/searchResult/:searchInput"
               element={<SearchResults />}
+            />
+            <Route
+              path="/get-payment-details/:id"
+              element={<GetPaymentDetails />}
             />
           </Route>
         </Routes>

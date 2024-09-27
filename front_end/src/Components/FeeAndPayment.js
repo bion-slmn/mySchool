@@ -12,8 +12,10 @@ const FeeAndPayment = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleClick = (feeId, feeName, studentID) => {
-    navigate(`/payments/${feeName}/${feeId}/${studentID}`);
+  const handleClick = (feeId, feeName, studentID, amount) => {
+    if (amount) {
+      navigate(`/payments/${feeName}/${feeId}/${studentID}`);
+    }
   };
 
   React.useEffect(() => {
@@ -73,7 +75,12 @@ const FeeAndPayment = () => {
             <tr
               key={payments.student_id}
               onClick={() => {
-                handleClick(feeId, feeName, payments.student_id);
+                handleClick(
+                  feeId,
+                  feeName,
+                  payments.student_id,
+                  payments.amount
+                );
               }}
             >
               <td data-label="Student Name">{studentName}</td>
