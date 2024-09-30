@@ -23,7 +23,7 @@ urlpatterns = [
     
 
     # Routes for fee
-    path('create-fee/<str:grade_id>/', FeeView.as_view()),
+    path('create-fee/', FeeView.as_view()),
     path('percentage-fee-per-grade/', FeePercentageCollected.as_view()),
     path('fees-in-grade/<str:grade_id>/', GradeFeeView.as_view()),
 

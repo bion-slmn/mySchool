@@ -190,7 +190,6 @@ class Fee(BaseModel):
     def set_name(self):
         self.name = f'{self.grade.name} {self.term.name} Fee'
             
-
     def save(self, *args, **kwargs):
         if not self.name:
             self.set_name()

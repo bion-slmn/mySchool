@@ -58,14 +58,10 @@ class FeeView(APIView):
         serializer = FeeSerializer(fee)
         return Response(serializer.data)
 
-    #@handle_exceptions
-    def post(self, request: HttpRequest, grade_id) -> Response:
+    @handle_exceptions
+    def post(self, request: HttpRequest) -> Response:
         """
-        Creates a new fee associated with a specific grade and assigns it to all students in that grade.
-
-        Args:
-            request (HttpRequest): The HTTP request object containing the fee data.
-            grade_id (int): The ID of the grade to which the fee will be associated.
+        Creates a new fee associated with a and assigns it to all students in that grade.
 
         Returns:
             Response: A response containing the serialized fee data if
@@ -75,18 +71,43 @@ class FeeView(APIView):
             Http404: If the grade with the specified ID does not exist.
         """
 
-        grade = get_object_or_404(Grade, id=grade_id)
-        serializer = FeeSerializer(data=request.data)
+        grades = self.validate_grade_id(request)        
 
-        if serializer.is_valid():
+        fee_data = request.data.copy()
+        fee_data.pop('grade_ids', None)
+        serializer = FeeSerializer(data=fee_data)
+
+        serializer.is_valid(raise_exception=True)
+       
+        for grade in grades:
+    
             fee = serializer.save(grade=grade)
-
-            # Add the fee to all students in the grade
             grade_students = Student.objects.filter(grade=grade)
             fee.students.add(*grade_students)
 
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def validate_grade_id(self, request) -> List[Grade]:
+        """
+        Validates the provided grade IDs and returns the corresponding Grade objects.
+
+        Returns:
+            List[Grade]: A list of Grade objects corresponding to the provided grade IDs.
+
+        Raises:
+            Http404: If any of the provided grade IDs are invalid.
+        """
+
+        grade_ids = request.data.get('grade_ids', [])
+        if not grade_ids or not isinstance(grade_ids, list):
+            raise ValueError({"detail": "Grade IDs must be provided as a list."})
+
+        grades = Grade.objects.filter(id__in=grade_ids)
+
+        if len(grades) != len(grade_ids):
+            raise ValueError({"detail": "Some grade IDs are invalid."})
+        
+        return grades
 
 
 class FeePercentageCollected(APIView):
