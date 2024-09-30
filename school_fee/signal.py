@@ -45,7 +45,7 @@ def grade_changed(instance) -> bool:
 def add_associated_fee(sender, instance, created, **kwargs):
     """
     Automatically adds associated fees to a student instance before it is saved. 
-    This function checks if the student is being added or if their grade has changed, 
+    This function checks if the student is being added , 
     and adds relevant fees based on the current date.
 
     Args:
@@ -58,6 +58,5 @@ def add_associated_fee(sender, instance, created, **kwargs):
     """
     if created:
         grade = instance.grade
-        today = timezone.now().date()
-        relevant_fees = grade.fees.filter(to_date__gte=today)
+        relevant_fees = grade.fees.filter(is_active=True)
         instance.fees.add(*relevant_fees)

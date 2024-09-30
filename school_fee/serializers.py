@@ -1,4 +1,4 @@
-from .models import School, Grade, Student, Fee, Payment
+from .models import School, Grade, Student, Fee, Payment, Term
 from rest_framework import serializers
 
 
@@ -18,16 +18,25 @@ class BaseSerializer(serializers.ModelSerializer):
 
 
 class SchoolSerializer(BaseSerializer):
+    '''
+    SchoolSerializer is a class that serializes the School model.
+    '''
     class Meta:
         model = School
         fields = '__all__'
 
 class GradeSerializer(BaseSerializer):
+    '''
+    GradeSerializer is a class that serial
+    '''
     class Meta:
         model = Grade
         fields = '__all__'
 
 class StudentSerializer(serializers.ModelSerializer):
+    '''
+    StudentSerializer is a class that serializes the Student model.
+    '''
     gender = serializers.CharField()
     grade_name = serializers.CharField(source='grade.name', read_only=True)  # Fetch the grade's name directly
 
@@ -43,24 +52,27 @@ class StudentSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError()
     
 class FeeSerializer(serializers.ModelSerializer):
-    from_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
-    to_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
-
+    ''' 
+    FeeSerializer is a class that serial fee model
+    '''
     class Meta:
         model = Fee
+        fields = '__all__'
+
+class TermSerializer(serializers.ModelSerializer):
+    '''
+    TermSerializer is a class that serial term model
+    '''
+    class Meta:
+        model = Term
         fields = '__all__'
 
     def validate(self, data):
         """
         Ensure that 'to_date' is after 'from_date'.
         """
-        from_date = data.get('from_date')
-        to_date = data.get('to_date')
-
-        if to_date and from_date and to_date <= from_date:
-            raise serializers.ValidationError(
-                {'to_date': 'Expiration date must be after the start date.'}
-            )
+        if data['end_date'] < data['start_date']:
+            raise serializers.ValidationError("End date must be after start date.")
         return data
     
 

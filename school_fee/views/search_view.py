@@ -33,17 +33,15 @@ class GetDetailView(APIView):
         student_info = StudentSerializer(student)
         student_info = student_info.data
         payment_info = self.get_payment_info(student)
-        print(payment_info, 111)
         student_info["payment_info"] = payment_info
         return Response(student_info)
         
     def get_payment_info(self, student):
-        print(student.fees.all(), 222)
+        
         payment_info = {}
         for fee in student.fees.all():
-            payment_info[fee.name] = {"total": 0, "payments": []}
+            payment_info[fee.name] = {"total": fee.total_paid, "payments": []} 
             for payment in fee.payments.all():
-                payment_info[fee.name]["total"] += payment.amount
                 payment_info[fee.name]["payments"].append(
                     {"amount": payment.amount, "date": payment.date_paid})
                 
