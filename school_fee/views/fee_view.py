@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from ..models import Fee, Grade, Student
+from ..models import Fee, Grade, Student, Term
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpRequest
@@ -10,7 +10,7 @@ from rest_framework.permissions import AllowAny
 from typing import List, Dict, Any
 from collections import defaultdict
 from django.db.models import Count
-from rest_framework.permissions import AllowAny
+
 
 def group_by_key(source: List[Dict[str, Any]],
                  group_by: str) -> Dict[str, List[Dict[str, Any]]]:
@@ -39,6 +39,7 @@ def group_by_key(source: List[Dict[str, Any]],
 
 
 class FeeView(APIView):
+    permission_classes = [AllowAny]
     @handle_exceptions
     def get(self, request: HttpRequest, fee_id) -> Response:
         """
@@ -69,23 +70,29 @@ class FeeView(APIView):
 
         Raises:
             Http404: If the grade with the specified ID does not exist.
-        """
-
-        grades = self.validate_grade_id(request)        
+        """      
 
         fee_data = request.data.copy()
         fee_data.pop('grade_ids', None)
-        serializer = FeeSerializer(data=fee_data)
-
+        
+        if not fee_data:
+            raise ValueError({"detail": "Fee details must be provided."})
+        
+        serializer = FeeSerializer(data=fee_data, partial=True)
         serializer.is_valid(raise_exception=True)
+        
+        grades = self.validate_grade_id(request)
+
+        results = []
        
         for grade in grades:
     
             fee = serializer.save(grade=grade)
             grade_students = Student.objects.filter(grade=grade)
             fee.students.add(*grade_students)
+            results.append(fee.data)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(results, status=status.HTTP_201_CREATED)
     
     def validate_grade_id(self, request) -> List[Grade]:
         """
@@ -151,3 +158,12 @@ class GradeFeeView(APIView):
         grade = get_object_or_404(Grade, id=grade_id)
         fee = grade.fees.all().values('id', 'name', 'total_amount')
         return Response(fee, 200)
+
+
+class FeePerTerm(APIView):
+    permission_classes = [AllowAny]
+    @handle_exceptions
+    def get(self, request: HttpRequest, term_id) -> Response:
+        term  = get_object_or_404(Term.objects.prefetch_related('fees'), id=term_id)
+        fees = term.fees.all().values('id', 'name', 'total_amount','fee_type', 'is_active')
+        return Response(fees, 200)

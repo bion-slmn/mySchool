@@ -4,10 +4,12 @@ from django.http import HttpRequest
 from ..decorator import handle_exceptions
 from rest_framework.views import APIView
 from ..serializers import TermSerializer
+from rest_framework.permissions import AllowAny
 
 
 
 class TermView(APIView):
+    permission_classes = [AllowAny]
     @handle_exceptions
     def get(self, request: HttpRequest) -> Response:
         """

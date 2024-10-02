@@ -59,11 +59,12 @@ class Term(BaseModel):
     def update_is_current(self):
         today = timezone.now().date()
         self.is_current = self.end_date >= today >= self.start_date
-        self.save()
+        
 
     def save(self, *args, **kwargs):
         if self.end_date < self.start_date:
             raise ValueError('End date must be greater than start date')
+        self.update_is_current()
         super().save(*args, **kwargs)
 
     def __str__(self):

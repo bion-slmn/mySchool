@@ -1,16 +1,21 @@
 from django.urls import path
 from .views.school_view import SchoolView, CreateSchool
 from .views.grade_view import GradeView, StudentInGradeView
-from .views.fee_view import FeeView, FeePercentageCollected, GradeFeeView
+from .views.fee_view import FeeView, FeePercentageCollected, GradeFeeView, FeePerTerm
 from .views.student_view import StudentView, CreateStudent
 from .views.payment_views import (PaymentonFee, CreatePaymentView,
-                                   PaymentPerStudent)
+                                   PaymentPerStudent, )
+from .views.term_view import TermView
 from .views.search_view import GetDetailView, SearchView
 
 urlpatterns = [
     # routes for school
     path('view-school/<str:school_id>/', SchoolView.as_view()),
     path('create-school/', CreateSchool.as_view()),
+
+    # create terms
+    path('view-terms/', TermView.as_view(), name='view-terms'),
+    path('create-term/', TermView.as_view(), name='create-term'),
 
     # Route for Grades
     path('create-grade/', GradeView.as_view()),
@@ -31,6 +36,7 @@ urlpatterns = [
     path('payment-on-fee/<str:fee_id>/', PaymentonFee.as_view()),
     path('create-payment/', CreatePaymentView.as_view(), name='create-payment'),
     path('payments-per-student/<str:fee_id>/', PaymentPerStudent.as_view()),
+    path('fee-per-term/<str:term_id>/', FeePerTerm.as_view()),
 
     # search routes
     path('search/', SearchView.as_view()),
