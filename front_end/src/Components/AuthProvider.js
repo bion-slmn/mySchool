@@ -13,16 +13,13 @@ const AuthProvider = ({ children }) => {
   const loginAction = async (data) => {
     let status_code;
 
-    const response = await fetch(
-      "https://myschool-ax55.onrender.com/api/user/login/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    const response = await fetch("http://127.0.0.1:8000/api/user/login/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
     status_code = response.status;
     const res = await response.json();
     if (res.access) {

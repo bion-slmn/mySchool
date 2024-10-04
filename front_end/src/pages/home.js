@@ -3,6 +3,7 @@ import { useState } from "react";
 import "../styles/home.css";
 import SearchBar from "../Components/searchBar";
 import { Greeting } from "./greeting";
+import CreateTerm from "../Components/createTerm";
 
 function Home() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -22,6 +23,7 @@ function Home() {
           and accuracy.
         </p>
         <SearchBar />
+        <CreateTerm />
       </header>
 
       <section className="home-actions">

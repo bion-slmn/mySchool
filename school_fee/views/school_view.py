@@ -43,13 +43,13 @@ class CreateSchool(APIView):
         """
 
         if self._check_user_has_school(request):
-            return Response('User can only have one school', 400)
-        print(121211212)
+            raise ValueError('User can only have one school')
+        
         serializer = SchoolSerializer(data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(serializer.data, 201)
-        return Response(serializer.errors)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(owner=request.user)
+        return Response(serializer.data, 201)
+        
 
     def _check_user_has_school(self, request: HttpRequest) -> bool:
         """

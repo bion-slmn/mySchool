@@ -10,6 +10,7 @@ from .serializers import MyTokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
+
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
@@ -88,6 +89,20 @@ class UserView(APIView):
     
 class CreateAdminView(APIView):
     permission_classes = [AllowAny]
+
+    def get(self, request: HttpRequest) -> Response:
+        '''
+        get user admin information
+        '''
+        user = request.user
+        user_data = UserSerializer(user).data
+        if hasattr(user, 'schools'):
+            school = user.schools
+            user_data['school_name'] = school.name
+            user_data['school_id'] = school.id
+
+        return Response(user_data, 200)
+
     def post(self, request: HttpRequest) -> Response:
         serializer = UserSerializer(data=request.data)
 

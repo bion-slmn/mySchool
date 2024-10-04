@@ -33,7 +33,7 @@ class GradeSerializer(BaseSerializer):
         model = Grade
         fields = '__all__'
 
-class StudentSerializer(serializers.ModelSerializer):
+class StudentSerializer(BaseSerializer):
     '''
     StudentSerializer is a class that serializes the Student model.
     '''
@@ -51,7 +51,7 @@ class StudentSerializer(serializers.ModelSerializer):
             return value
         raise serializers.ValidationError()
     
-class FeeSerializer(serializers.ModelSerializer):
+class FeeSerializer(BaseSerializer):
     ''' 
     FeeSerializer is a class that serial fee model
     '''
@@ -59,13 +59,13 @@ class FeeSerializer(serializers.ModelSerializer):
         model = Fee
         fields = '__all__'
 
-class TermSerializer(serializers.ModelSerializer):
+class TermSerializer(BaseSerializer):
     '''
     TermSerializer is a class that serial term model
     '''
     class Meta:
         model = Term
-        fields = '__all__'
+        exclude = ['school']
 
     def validate(self, data):
         """

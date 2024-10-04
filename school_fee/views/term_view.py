@@ -20,12 +20,19 @@ class TermView(APIView):
             Response: A response containing the serialized term data.
         """
         status = request.query_params.get('status')
+        year = request.query_params.get('year')
+        
+        terms = Term.objects.all()
+
         if status:
-            terms = Term.objects.filter(is_current=True)
-        else:
-            terms = Term.objects.all()
+            terms = terms.filter(is_current=status)
+
+        if year:
+            terms = terms.filter(start_date__year=year)
+
         serializer = TermSerializer(terms, many=True)
         return Response(serializer.data)
+        
     
     @handle_exceptions
     def post(self, request: HttpRequest) -> Response:
@@ -39,7 +46,9 @@ class TermView(APIView):
         """
         serializer = TermSerializer(data=request.data)
         school = request.user.schools
+       
         serializer.is_valid(raise_exception=True)
-        serializer.save(school=school)
+        term = serializer.save(school=school)
+        print(term.is_current, term.school, 111111111)
         return Response(serializer.data, 201)
     

@@ -128,7 +128,6 @@ class Grade(BaseModel):
 class FeeType(models.TextChoices):
     ADMISSION = 'ADMISSION', 'Admission Fee'
     TERM = 'TERM', 'Term Fee'
-    EXAM = 'EXAM', 'Exam Fee'
     ONCE = 'ONCE', 'One-time Fee'
     DAILY = 'DAILY', 'Daily Fee'
 
@@ -166,6 +165,7 @@ class Fee(BaseModel):
         null=True, 
         help_text="Term this fee structure applies to."
     )
+    description = models.TextField(null=True)
     fee_type = models.CharField(
         max_length=50, 
         choices=FeeType.choices, 
@@ -189,17 +189,19 @@ class Fee(BaseModel):
             self.save()
 
     def set_name(self):
-        self.name = f'{self.grade.name} {self.term.name} Fee'
+        year = timezone.now().year
+        if self.fee_type == "ADMISSION":
+            self.name = f'{self.fee_type} -- {year} Fee'
+        else:            
+            self.name = f'{self.grade.name} -- {self.term.name} - {self.fee_type} Fee'
+            print(self.name)
             
     def save(self, *args, **kwargs):
         if not self.name:
             self.set_name()
 
-        if self.fee_type == 'ADMISSION':
-            self.term = None
-        else:
-            if self.term is None:
-                raise ValidationError('A term is required for fee types other than ADMISSION.')
+        if self.term is None and self.fee_type != "ADMISSION":
+            raise ValidationError('A term is required for fee types other than ADMISSION.')
 
         super().save(*args, **kwargs)
 

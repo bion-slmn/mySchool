@@ -97,6 +97,61 @@ curl localhost:8000/api/school/create-school/ -H 'Content-Type: application/json
 
 {"id":"056c3c3c-6a9d-4d82-924e-7f81533639bd","created_at":"2024-08-19","updated_at":"2024-08-19T13:47:24.243793Z","name":"bonfire school","address":"my first school","owner":"dbc6ba6f-79f5-4da2-9988-fa7de14e9d91"}
 
+## CREATE A TERM
+
+````curl localhost:8000/api/school/create-term/ -d '{"name": "Term 2 2024", "s
+tart_date": "2024-09-09", "end_date": "2024-10-05"}' -H 'Content-Type: application/json' -H "Authorization: Bea
+rer  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI3ODYxMDUxLCJpYXQiOjE3Mjc4N
+Tc0NTEsImp0aSI6ImU3MGFhNDllZGUwMjQ2MmI4YmI4NjBlMjhkYzRkYWM0IiwidXNlcl9pZCI6ImRhYmUyNWQ5LWRjNzUtNDQ0MC1iM2Y4LWJm
+MmNlMDYxZDRiZiIsIm5hbWUiOiIifQ.y8ElelOEs9GXXjqX861Iu6hjk8D2P64CzK7hIkicbVg" | jq```
+
+```{
+  "id": "00fc6c65-b75d-4af3-a37a-5176f63d40b3",
+  "created_at": "2024-10-02",
+  "updated_at": "2024-10-02",
+  "name": "Term 3 2024",
+  "start_date": "2024-09-09",
+  "end_date": "2024-10-05",
+  "is_current": true
+}```
+
+## GET ACTIVE TERM
+
+curl localhost:8000/api/school/view-terms/?status=True | jq
+[
+  {
+    "id": "0bbbd488-9c57-4bf0-b4bc-93d362729d0d",
+    "created_at": "2024-10-02",
+    "updated_at": "2024-10-02",
+    "name": "Term 1 2024",
+    "start_date": "2024-09-09",
+    "end_date": "2024-10-05",
+    "is_current": true
+  },
+  {
+    "id": "1d0283ea-79b3-4842-992c-53fc4e92d45f",
+    "created_at": "2024-10-02",
+    "updated_at": "2024-10-02",
+    "name": "Term 2 2024",
+    "start_date": "2024-09-09",
+    "end_date": "2024-10-05",
+    "is_current": true
+  },
+  {
+    "id": "00fc6c65-b75d-4af3-a37a-5176f63d40b3",
+    "created_at": "2024-10-02",
+    "updated_at": "2024-10-02",
+    "name": "Term 3 2024",
+    "start_date": "2024-09-09",
+    "end_date": "2024-10-05",
+    "is_current": true
+  }
+]
+
+You can filter by year and status or year only
+curl localhost:8000/api/school/view-terms/?status=True&year=2024
+
+
 curl localhost:8000/api/school/create-grade/ -H 'Content-Type: application/json' -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0MDc2NjkwLCJpYXQiOjE3MjQwNzMwOTAsImp0aSI6Ijg5ZmRmN2ZkNjNjNzQzOTA5OGUyZGNjMDlmZTMwZWZiIiwidXNlcl9pZCI6ImRiYzZiYTZmLTc5ZjUtNGRhMi05OTg4LWZhN2RlMTRlOWQ5MSJ9.SpJEpZ6qsdb4y6gQySSh7yWPKL-\_5jC-7L1eTEgxBtg" -d '{"name": "Grade 4", "description": "Grade 4 lead by me"}'
 
 {"id":"a0a8be7f-c96e-4c95-853d-c41f5ec19635","created_at":"2024-08-19","updated_at":"2024-08-19T14:04:31.289046Z","name":"Grade 4","description":"Grade 4 lead by me","school":"056c3c3c-6a9d-4d82-924e-7f81533639bd"}
@@ -127,25 +182,29 @@ curl -X POST http://localhost:8000/api/school/create-payment/ -H "Content-Type: 
 
 curl localhost:8000/api/school/get-student-detail/?id=ef0c3271-a30c-4ed0-aba1-535e7277226f | jq
 
-```
+````
+
 {
-  "id": "ef0c3271-a30c-4ed0-aba1-535e7277226f",
-  "gender": "female",
-  "grade_name": "Baby",
-  "created_at": "2024-09-23T17:15:34.054135Z",
-  "name": "Avy",
-  "date_of_birth": "2024-09-05",
-  "grade": "e0eb028e-68ce-4a51-9bd0-b6a606d1ea8c",
-  "payment_info": {
-    "Term 3 baby class fee": {
-      "total": 250,
-      "payments": [
-        {
-          "amount": 250,
-          "date": "2024-09-23T17:18:19.831811Z"
-        }
-      ]
-    }
-  }
+"id": "ef0c3271-a30c-4ed0-aba1-535e7277226f",
+"gender": "female",
+"grade_name": "Baby",
+"created_at": "2024-09-23T17:15:34.054135Z",
+"name": "Avy",
+"date_of_birth": "2024-09-05",
+"grade": "e0eb028e-68ce-4a51-9bd0-b6a606d1ea8c",
+"payment_info": {
+"Term 3 baby class fee": {
+"total": 250,
+"payments": [
+{
+"amount": 250,
+"date": "2024-09-23T17:18:19.831811Z"
 }
+]
+}
+}
+}
+
+```
+
 ```

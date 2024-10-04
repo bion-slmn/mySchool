@@ -1,21 +1,33 @@
 import { useNavigate } from "react-router-dom";
 import { useFormSubmit, HandleResult, fetchData } from "./form";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import RotatingIcon from "./loadingIcon";
 import "../styles/form.css";
 import SubmitButton from "./submitButton";
 import Error from "./error";
 
+const FeeType = {
+  ADMISSION: "ADMISSION",
+  TERM: "TERM",
+  ONCE: "ONCE",
+  DAILY: "DAILY",
+};
+
 const CreateFee = () => {
   const [formData, setFormData] = useState({
-    name: "",
     total_amount: "",
-    from_date: "",
-    to_date: "",
-    grade: "",
+    term: "",
+    grade_ids: [], // Change to grade_ids to hold an array of selected grades
+    description: "",
+    fee_type: "TERM",
   });
 
-  const [grades, setGrades] = useState([]); // To store grades fetched from the API
+  let date = new Date();
+  let currentYear = date.getFullYear();
+
+  const [grades, setGrades] = useState([]);
+  const [terms, setTerms] = useState([]);
+  const [year, setYear] = useState(currentYear);
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,36 +39,86 @@ const CreateFee = () => {
       ...prevData,
       [name]: value,
     }));
+
+    // Check if the fee type is ADMISSION
+    if (name === "fee_type" && value === FeeType.ADMISSION) {
+      setFormData((prevData) => ({
+        ...prevData,
+        term: "",
+        year: "", // Clear year
+        grade_ids: [], // Clear selected grades
+      }));
+    }
   };
 
-  const handleShowForm = async () => {
-    const url = "api/school/view-all-grades/";
+  // Handle checkbox changes for grades
+  const handleGradeChange = (e) => {
+    const { value, checked } = e.target;
+    setFormData((prevData) => {
+      const updatedGradeIds = checked
+        ? [...prevData.grade_ids, value] // Add grade ID if checked
+        : prevData.grade_ids.filter((id) => id !== value); // Remove if unchecked
+
+      return {
+        ...prevData,
+        grade_ids: updatedGradeIds,
+      };
+    });
+  };
+
+  // Fetch data (terms and grades) with error handling
+  const fetchDataFromAPI = async (url, data_type, endpoint_method = "GET") => {
     setIsLoading(true);
     try {
-      const [data, urlError] = await fetchData("GET", url);
+      const [data, urlError] = await fetchData(endpoint_method, url);
       setIsLoading(false);
 
       if (urlError) {
         setErrorMessage(urlError);
       } else {
-        console.log(data); // Check data and urlError
-        setGrades(data); // Set the fetched grades in the grades state variable
-        setShowForm(!showForm);
+        data_type === "grade" ? setGrades(data) : setTerms(data);
         setErrorMessage("");
       }
     } catch (err) {
-      console.error("An unexpected error occurred:", err); // Handle unexpected errors
-      setErrorMessage(err.message);
+      setIsLoading(false);
+      setErrorMessage("An unexpected error occurred: " + err.message);
     }
   };
 
+  // Fetch terms when year changes
+  useEffect(() => {
+    const fetchTerms = async () => {
+      const endpoint = `api/school/view-terms/?year=${year}`;
+      await fetchDataFromAPI(endpoint, "terms");
+    };
+    if (year) {
+      fetchTerms();
+    }
+  }, [year]);
+
+  useEffect(() => {
+    const fetchTerms = async () => {
+      const url = "api/school/view-all-grades/";
+      await fetchDataFromAPI(url, "grade");
+      console.log(grades, "all grades 777777777");
+    };
+    if (formData.fee_type && formData.fee_type !== FeeType.ADMISSION) {
+      fetchTerms();
+    }
+  }, []);
+
+  const handleShowForm = async () => {
+    setShowForm(!showForm);
+  };
+
   let { handleSubmit, error } = useFormSubmit(
-    `api/school/create-fee/${formData.grade}/`,
-    formData, // Pass formData directly
+    `api/school/create-fee/`,
+    formData,
     () => {
       setSubmitted(true);
     },
-    true
+    true,
+    setIsLoading
   );
 
   if (error) {
@@ -74,46 +136,79 @@ const CreateFee = () => {
 
       {showForm && (
         <form onSubmit={handleSubmit}>
-          <label>Name</label>
-          <input
-            type="text"
-            name="name"
-            placeholder="Enter fee name e.g. Class 1 term 1 fee"
-            value={formData.name}
-            onChange={handleInputChange}
-            required
-          />
-          <label>Start Date</label>
-          <input
-            type="date"
-            name="from_date"
-            value={formData.from_date}
-            onChange={handleInputChange}
-            required
-          />
-          <label>Expiry Date</label>
-          <input
-            type="date"
-            name="to_date"
-            value={formData.to_date}
-            min={formData.from_date}
-            onChange={handleInputChange}
-            required
-          />
-          <label>Grade</label>
+          <label>Fee Type</label>
           <select
-            name="grade"
-            value={formData.grade}
+            name="fee_type"
+            value={formData.fee_type}
             onChange={handleInputChange}
             required
           >
-            <option value="">Select a grade</option>
-            {grades.map((grade) => (
-              <option value={grade.id} key={grade.id}>
-                {grade.name}
+            <option value="">Select Fee Type</option>
+            <option value={FeeType.ADMISSION}>{FeeType.ADMISSION}</option>
+            <option value={FeeType.TERM}>{FeeType.TERM}</option>
+            <option value={FeeType.ONCE}>{FeeType.ONCE}</option>
+            <option value={FeeType.DAILY}>{FeeType.DAILY}</option>
+          </select>
+
+          <label>Year</label>
+          <input
+            type="number"
+            placeholder="Select academic year"
+            min="2021"
+            max="2099"
+            step="1"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            required={formData.fee_type !== FeeType.ADMISSION} // Only required if not ADMISSION
+            disabled={formData.fee_type === FeeType.ADMISSION}
+          />
+
+          <label>Select a Term</label>
+          <select
+            name="term"
+            value={formData.term}
+            onChange={handleInputChange}
+            required={formData.fee_type !== FeeType.ADMISSION}
+            disabled={formData.fee_type === FeeType.ADMISSION}
+          >
+            <option value="">Select a term</option>
+            {terms.map((term) => (
+              <option value={term.id} key={term.id}>
+                {term.name}
               </option>
             ))}
           </select>
+
+          <label>Select Grades</label>
+          <div>
+            {grades.length ? (
+              grades.map((grade) => (
+                <div key={grade.id}>
+                  <input
+                    type="checkbox"
+                    value={grade.id}
+                    checked={formData.grade_ids.includes(grade.id)}
+                    onChange={handleGradeChange}
+                    disabled={formData.fee_type === FeeType.ADMISSION}
+                  />
+                  {grade.name}
+                </div>
+              ))
+            ) : (
+              <p>Please set grade first</p>
+            )}
+          </div>
+
+          <label>Description of Fee</label>
+          <textarea
+            type="text"
+            name="description"
+            placeholder="Provide a fee breakdown e.g., exam fee=200 ..."
+            value={formData.description}
+            onChange={handleInputChange}
+            required
+          />
+
           <label>Amount</label>
           <input
             type="number"
@@ -122,6 +217,7 @@ const CreateFee = () => {
             onChange={handleInputChange}
             required
           />
+
           <SubmitButton text="Create Fee" isLoading={isLoading} />
         </form>
       )}

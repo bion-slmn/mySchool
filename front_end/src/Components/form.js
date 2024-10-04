@@ -25,8 +25,9 @@ export const useFormSubmit = (
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const url = "https://myschool-ax55.onrender.com/" + endpoint;
+    const url = "http://127.0.0.1:8000/" + endpoint;
     let result;
+    console.log(url, 2424242);
 
     try {
       setIsLoading(true); // Start loading when the form is submitted
@@ -63,7 +64,6 @@ export const useFormSubmit = (
 
       // Handle other errors
       if (!response.ok) {
-        console.log(data, 2222222222);
         throw new Error(data || "An error occurred.");
       }
 
@@ -75,7 +75,7 @@ export const useFormSubmit = (
       onSuccess(); // Call the success callback
       return data;
     } catch (error) {
-      setError(error.message);
+      setError(error.message || "An eror has occurred");
     } finally {
       setIsLoading(false); // Stop loading after submission
     }
@@ -106,7 +106,7 @@ export const HandleResult = ({ error }) => {
 export const fetchData = async (endpoint_method, endpoint) => {
   let data = null; // Initialize data to null
   let urlError = ""; // Initialize error message to an empty string
-  const url = "https://myschool-ax55.onrender.com/" + endpoint;
+  const url = "http://127.0.0.1:8000/" + endpoint;
   console.log(url, 1212121212);
 
   try {

@@ -71,8 +71,9 @@ class FeeView(APIView):
         Raises:
             Http404: If the grade with the specified ID does not exist.
         """      
-
+        
         fee_data = request.data.copy()
+        
         fee_data.pop('grade_ids', None)
         
         if not fee_data:
@@ -80,6 +81,11 @@ class FeeView(APIView):
         
         serializer = FeeSerializer(data=fee_data, partial=True)
         serializer.is_valid(raise_exception=True)
+        print(fee_data, 2222222222)
+
+        if fee_data.get("fee_type") == "ADMISSION":
+            serializer.save()
+            return Response(serializer.data, 201)
         
         grades = self.validate_grade_id(request)
 
@@ -90,7 +96,7 @@ class FeeView(APIView):
             fee = serializer.save(grade=grade)
             grade_students = Student.objects.filter(grade=grade)
             fee.students.add(*grade_students)
-            results.append(fee.data)
+            results.append(FeeSerializer(fee).data)
 
         return Response(results, status=status.HTTP_201_CREATED)
     
