@@ -66,7 +66,7 @@ class GradeView(APIView):
         if serializer.is_valid():
             serializer.save(school=my_school)
             return Response(serializer.data, 201)
-        return Response(serializer.errors)
+        return Response(serializer.errors, 400)
 
 
 class StudentInGradeView(APIView):

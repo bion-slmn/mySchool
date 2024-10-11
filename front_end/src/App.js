@@ -17,12 +17,14 @@ import AuthProvider from "./Components/AuthProvider.js";
 import PrivateRoute from "./Components/PrivateRoute.js";
 import { SearchResults } from "./Components/searchBar.js";
 import { GetPaymentDetails } from "./Components/searchBar.js";
+import Footer from "./pages/footer.js";
 
 function App() {
   return (
     <AuthProvider>
       <div className="App">
         <NavBar />
+
         <Routes>
           <Route path="login" element={<Login />} />
           <Route element={<PrivateRoute />}>
@@ -53,6 +55,7 @@ function App() {
             />
           </Route>
         </Routes>
+        <Footer />
       </div>
     </AuthProvider>
   );

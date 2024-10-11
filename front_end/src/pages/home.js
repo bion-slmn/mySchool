@@ -8,9 +8,15 @@ import CreateTerm from "../Components/createTerm";
 function Home() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Toggle dropdown visibility
+  // Toggle dropdown visibility and scroll to the top
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
+    console.log("Scrolling to the top of the page");
+    // Scroll to the top of the page when the button is clicked
+    window.scrollTo({
+      top: document.body.scrollHeight / 2,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -43,11 +49,10 @@ function Home() {
                 Register Grade
               </Link>
               <Link to="/create-fee" className="dropdown-item">
-                {" "}
                 Create Fee
               </Link>
               <Link to="/register-payment" className="dropdown-item">
-                Register Payment{" "}
+                Register Payment
               </Link>
               <Link to="/register-student" className="dropdown-item">
                 Register Student
@@ -56,6 +61,7 @@ function Home() {
           )}
         </div>
       </section>
+      <div style={{ height: 250 }}></div>
     </div>
   );
 }

@@ -11,26 +11,38 @@ const RegisterGrade = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState("");
+  const [resultData, setResultData] = useState(null);
 
   const { handleSubmit, error } = useFormSubmit(
     "api/school/create-grade/",
     { name, description },
-    () => {
+    (data) => {
       setSubmitted(true);
       setErrors("");
+      setResultData(data);
     },
     true,
     setIsLoading
   );
 
+  const handleShowForm = () => {
+    setShowForm(!showForm);
+    setErrors(""); // Clear the error message when showing the form
+    setResultData(null); // Clear previous results
+  };
+
   useEffect(() => {
     <HandleResult error={error} />;
-  }, [error]);
+    console.log(error);
+    if (error || resultData) {
+      setShowForm(false);
+    }
+  }, [error, resultData]);
 
   return (
     <div className="Register">
       <h2>Register a Grade</h2>
-      <button className="menu grade" onClick={() => setShowForm(!showForm)}>
+      <button className="menu grade" onClick={handleShowForm}>
         Click To Add a Grade
       </button>
 
@@ -57,7 +69,7 @@ const RegisterGrade = () => {
         </form>
       )}
       {error && <Error error={error} />}
-      {submitted && <HandleResult error={error} />}
+      {resultData && <HandleResult results={resultData} />}
     </div>
   );
 };

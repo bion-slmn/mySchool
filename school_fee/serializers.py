@@ -37,12 +37,13 @@ class StudentSerializer(BaseSerializer):
     '''
     StudentSerializer is a class that serializes the Student model.
     '''
+    updated_at = None 
     gender = serializers.CharField()
     grade_name = serializers.CharField(source='grade.name', read_only=True)  # Fetch the grade's name directly
 
     class Meta:
         model = Student
-        exclude = ['school', 'updated_at']
+        exclude = ['school']
         extra_fields = ['grade_name']
 
 

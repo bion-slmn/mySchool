@@ -32,8 +32,7 @@ def handle_exceptions(view_func: callable) -> callable:
                 {'error': str(error)}, status=status.HTTP_404_NOT_FOUND)
         except Exception as error:
             print(error)
-            return Response(
-                {'error': str(error)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(str(error), status=status.HTTP_400_BAD_REQUEST)
     return _wrapped_view
 
 

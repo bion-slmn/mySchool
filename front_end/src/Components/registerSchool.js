@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useFormSubmit } from "./form";
+import { useFormSubmit, HandleResult } from "./form";
 import "../styles/form.css";
 import SubmitButton from "./submitButton";
 import Error from "./error";
@@ -8,22 +8,30 @@ const RegisterSchool = () => {
   const [school, setSchool] = useState("");
   const [address, setAddress] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // State for loading
+  const [isLoading, setIsLoading] = useState(false);
+  const [resultData, setResultData] = useState(null); // State for loading
 
   const { handleSubmit, error } = useFormSubmit(
     "api/school/create-school/",
     { school, address },
-    () => {
+    (data) => {
       setIsLoading(false); // Stop loading when the form is successfully submitted
+      setResultData(data);
     },
     true,
     setIsLoading
   );
 
+  const handleShowForm = () => {
+    setShowForm(!showForm);
+    // Clear the error message when showing the form
+    error = ""; // Clear previous results
+  };
+
   return (
-    <div className="SchoolRegister">
+    <div className="Register">
       <h2>Register a School</h2>
-      <button onClick={() => setShowForm(!showForm)} className="menu school">
+      <button onClick={handleShowForm} className="menu school">
         Click to add a school
       </button>
 
@@ -51,6 +59,7 @@ const RegisterSchool = () => {
 
       {/* Display error message if error exists */}
       {error && <Error error={error} />}
+      {resultData && <HandleResult results={resultData} />}
     </div>
   );
 };

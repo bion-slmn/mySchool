@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/results.css";
+import { useState } from "react";
 
 const handleErrors = (response) => {
   if (response.status === 403) {
@@ -16,7 +18,7 @@ const handleErrors = (response) => {
 export const useFormSubmit = (
   endpoint,
   payload,
-  onSuccess = () => {},
+  onSuccess = (data) => {}, // Passing the result data to onSuccess
   includeAuth = false,
   setIsLoading = () => {}
 ) => {
@@ -27,10 +29,9 @@ export const useFormSubmit = (
     event.preventDefault();
     const url = "http://127.0.0.1:8000/" + endpoint;
     let result;
-    console.log(url, 2424242);
 
     try {
-      setIsLoading(true); // Start loading when the form is submitted
+      setIsLoading(true);
 
       const headers = {
         "Content-Type": "application/json",
@@ -49,10 +50,8 @@ export const useFormSubmit = (
 
       const data = await response.json();
       result = data;
-      console.log(result, 1111111111111);
 
       if (response.status === 401) {
-        console.log("failed to login............");
         localStorage.setItem("sHule", "");
         navigate("/login");
       }
@@ -64,7 +63,12 @@ export const useFormSubmit = (
 
       // Handle other errors
       if (!response.ok) {
-        throw new Error(data || "An error occurred.");
+        console.error("Error submitting form: 23", data);
+        const errorMessage =
+          typeof data === "object" && data !== null
+            ? JSON.stringify(data) // Convert object to string
+            : data;
+        throw new Error(errorMessage || "An error has occurred");
       }
 
       if (data.access) {
@@ -72,10 +76,10 @@ export const useFormSubmit = (
       }
 
       setError("");
-      onSuccess(); // Call the success callback
-      return data;
+      onSuccess(data); // Pass the result data to the onSuccess callback
     } catch (error) {
-      setError(error.message || "An eror has occurred");
+      console.error("Error submitting form:", error);
+      setError(error.message || "An error has occurred");
     } finally {
       setIsLoading(false); // Stop loading after submission
     }
@@ -84,14 +88,63 @@ export const useFormSubmit = (
   return { handleSubmit, error };
 };
 
-export const HandleResult = ({ error }) => {
+const Showresults = (props) => {
+  const { key, value } = props.result; // Destructure key-value pair
   return (
-    <div>
-      {error ? (
-        <div style={{ color: "red" }}>{error}</div>
+    <div className="result-item">
+      <span className="result-key">{key}:</span>{" "}
+      <span className="result-value">{JSON.stringify(value)}</span>
+    </div>
+  );
+};
+
+export const HandleResult = ({ results }) => {
+  const notToShow = [
+    "id",
+    "updated_at",
+    "school",
+    "fee",
+    "student",
+    "term",
+    "created_at",
+    "grade",
+    "students",
+    "is_active",
+    "total_paid",
+  ]; // Fields to exclude
+
+  if (!results) {
+    return;
+  }
+
+  // Scroll to the specified height when results are updated
+
+  return (
+    <div className="results-container">
+      <h1 className="results-heading">Success ...</h1>
+      {Array.isArray(results) ? (
+        results.map((result, index) => (
+          <div key={index} className="result-item">
+            {Object.entries(result)
+              .filter(([key]) => !notToShow.includes(key)) // Exclude certain fields
+              .map(([key, value], subIndex) => (
+                <Showresults key={subIndex} result={{ key, value }} />
+              ))}
+          </div>
+        ))
       ) : (
-        <div>Successfully added</div>
+        <div className="result-item">
+          {Object.entries(results)
+            .filter(([key]) => !notToShow.includes(key)) // Filter out keys that shouldn't be shown
+            .map(([key, value], index) => (
+              <Showresults key={index} result={{ key, value }} />
+            ))}
+        </div>
       )}
+      {window.scrollTo({
+        top: document.body.scrollHeight * 0.75,
+        behavior: "smooth",
+      })}
     </div>
   );
 };

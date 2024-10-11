@@ -19,7 +19,7 @@ const CreateFee = () => {
     term: "",
     grade_ids: [], // Change to grade_ids to hold an array of selected grades
     description: "",
-    fee_type: "TERM",
+    fee_type: "",
   });
 
   let date = new Date();
@@ -32,6 +32,7 @@ const CreateFee = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [resultData, setResultData] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -100,39 +101,43 @@ const CreateFee = () => {
     const fetchTerms = async () => {
       const url = "api/school/view-all-grades/";
       await fetchDataFromAPI(url, "grade");
-      console.log(grades, "all grades 777777777");
     };
     if (formData.fee_type && formData.fee_type !== FeeType.ADMISSION) {
       fetchTerms();
     }
-  }, []);
+  }, [formData.fee_type]);
 
   const handleShowForm = async () => {
     setShowForm(!showForm);
+    setResultData(null);
+    setErrorMessage("");
   };
 
   let { handleSubmit, error } = useFormSubmit(
     `api/school/create-fee/`,
     formData,
-    () => {
+    (data) => {
       setSubmitted(true);
+      setResultData(data);
+      setShowForm(false);
+      setFormData({});
     },
     true,
-    setIsLoading
+    setIsLoading,
+    (error) => {
+      // This is where you handle errors from the submission
+      setErrorMessage(error);
+      setIsLoading(false);
+    }
   );
 
-  if (error) {
-    setErrorMessage(error);
-  }
-
   return (
-    <div className="createfee">
+    <div className="Register">
       <h2>Create a fee</h2>
       <button className="menu fee" onClick={handleShowForm}>
         Click to create a Fee&nbsp;&nbsp;&nbsp;
         {isLoading && <RotatingIcon />}
       </button>
-      {errorMessage && <Error error={errorMessage} />}
 
       {showForm && (
         <form onSubmit={handleSubmit}>
@@ -180,10 +185,10 @@ const CreateFee = () => {
           </select>
 
           <label>Select Grades</label>
-          <div>
+          <div className="checkbox-container">
             {grades.length ? (
               grades.map((grade) => (
-                <div key={grade.id}>
+                <div key={grade.id} className="checkbox-item">
                   <input
                     type="checkbox"
                     value={grade.id}
@@ -191,7 +196,7 @@ const CreateFee = () => {
                     onChange={handleGradeChange}
                     disabled={formData.fee_type === FeeType.ADMISSION}
                   />
-                  {grade.name}
+                  <label>{grade.name}</label>
                 </div>
               ))
             ) : (
@@ -221,7 +226,8 @@ const CreateFee = () => {
           <SubmitButton text="Create Fee" isLoading={isLoading} />
         </form>
       )}
-      {submitted && <HandleResult error={errorMessage} />}
+      {errorMessage && <Error error={errorMessage} />}
+      {resultData && <HandleResult results={resultData} />}
     </div>
   );
 };

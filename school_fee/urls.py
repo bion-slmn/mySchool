@@ -2,7 +2,7 @@ from django.urls import path
 from .views.school_view import SchoolView, CreateSchool
 from .views.grade_view import GradeView, StudentInGradeView
 from .views.fee_view import FeeView, FeePercentageCollected, GradeFeeView, FeePerTerm
-from .views.student_view import StudentView, CreateStudent
+from .views.student_view import StudentView, CreateStudent, PromoteStudent
 from .views.payment_views import (PaymentonFee, CreatePaymentView,
                                    PaymentPerStudent, )
 from .views.term_view import TermView
@@ -25,6 +25,7 @@ urlpatterns = [
     path('register-student/', CreateStudent.as_view()),
     path('view-student/<str:student_id>/', StudentView.as_view()),
     path('students-in-grade/<str:grade_id>/', StudentInGradeView.as_view(), name="list 0f students in grade"),
+    path('promote-student/<str:next_grade_id>/', PromoteStudent.as_view()),
     
 
     # Routes for fee

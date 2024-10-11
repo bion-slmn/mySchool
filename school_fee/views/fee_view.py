@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from typing import List, Dict, Any
 from collections import defaultdict
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 
 
 def group_by_key(source: List[Dict[str, Any]],
@@ -130,18 +130,22 @@ class FeePercentageCollected(APIView):
         """
         Get the percentage of fees collected per grade, optimized for performance.
         """
-        grades = Grade.objects.prefetch_related('fees').annotate(
-            total_students=Count('students'),
-        ).exclude(
-            fees__isnull=True).values(
-            'id',
-            'name',
-            'total_students',
-            'fees__id',
-            'fees__total_amount',
-            'fees__name',
-            'fees__total_paid')
-        result = group_by_key(grades, 'name')
+        term_id = request.query_params.get('term_id')
+        print(term_id,2222)
+        fees_queryset = Fee.objects.filter(term=term_id)
+        grades = Grade.objects.filter(fees__term=term_id
+                                      ).prefetch_related(
+                                          Prefetch('fees', queryset=fees_queryset)
+                                          ).annotate(total_students=Count('students'),
+                                                     ).values(
+                                                         'id',
+                                                        'name',
+                                                        'total_students',
+                                                        'fees__id',
+                                                        'fees__total_amount',
+                                                        'fees__name',
+                                                        'fees__total_paid',)
+        result = group_by_key(grades, 'name') if grades else {}
 
         return Response(result, status=status.HTTP_200_OK)
 

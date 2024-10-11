@@ -18,14 +18,18 @@ const RegisterStudent = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [resultData, setResultData] = useState(null);
   const navigate = useNavigate();
 
   // Update handleSubmit to use the correct form data
   let { handleSubmit, error } = useFormSubmit(
     "api/school/register-student/",
     formData, // Pass formData directly
-    () => {
+    (data) => {
       setSubmitted(true);
+      setResultData(data);
+      setShowForm(false);
+      setFormData({});
     },
     true,
     setIsLoading
@@ -124,7 +128,7 @@ const RegisterStudent = () => {
         </form>
       )}
 
-      {submitted && <HandleResult error={error} />}
+      {resultData && <HandleResult results={resultData} />}
     </div>
   );
 };

@@ -1,3 +1,24 @@
+form {
+  width: 70%;
+  margin: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  margin-bottom: 15%;
+}
+
+/* Media query for small screens */
+@media (max-width: 768px) {
+  form {
+    width: 100%; /* Apply 95% width on smaller screens */
+    padding: 0px; /* Smaller padding on smaller screens */
+  }
+}
+
+
+
 input,
 select, textarea {
   width: 80%;
@@ -17,11 +38,68 @@ input::placeholder, textarea::placeholder {
   color: gray;
 }
 
+input:required:invalid,
+select:required:invalid,
+textarea:required:invalid {
+  border-color: red; /* Border turns red if the field is invalid */
+  animation: shake 0.3s ease-in-out; /* Add shake animation */
+}
+
+/* Keyframes for shake animation */
+@keyframes shake {
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+/* Container for the checkboxes */
+.checkbox-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust columns automatically */
+  gap: 10px; /* Space between checkboxes */
+  padding: 10px;
+}
+
+/* Style for the individual checkbox items */
+.checkbox-item {
+  display: flex;
+  align-items: center;
+}
+
+/* Style for all checkboxes */
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  cursor: pointer;
+  accent-color: green; /* Applies color to the checkbox (for supporting browsers) */
+}
+
+/* Style for checked checkboxes */
+input[type="checkbox"]:checked {
+  background-color: #4caf50; /* Green background */
+  border: 2px solid #388e3c; /* Darker green border */
+}
+
+/* Style for checkboxes when focused (optional) */
+input[type="checkbox"]:focus {
+  outline: 2px solid #80bdff; /* Blue outline when focused */
+  outline-offset: 2px;
+}
+
+/* Style the label next to the checked checkbox */
+input[type="checkbox"]:checked + label {
+  color: #388e3c; /* Change label color when checkbox is checked */
+  font-weight: bold;
+}
+
+
 label {
   display: block; /* This makes the label appear on its own line */
   font-weight: bold;
   margin-bottom: 5px;
-  margin-left: 65px;
+  margin-left: 10%;
   text-align: left;
 }
 

@@ -191,9 +191,9 @@ class Fee(BaseModel):
     def set_name(self):
         year = timezone.now().year
         if self.fee_type == "ADMISSION":
-            self.name = f'{self.fee_type} -- {year} Fee'
+            self.name = f'{self.fee_type}--{year}-{self.total_amount} Fee'
         else:            
-            self.name = f'{self.grade.name} -- {self.term.name} - {self.fee_type} Fee'
+            self.name = f'{self.grade.name} - {self.term.name} - {self.fee_type} Fee'
             print(self.name)
             
     def save(self, *args, **kwargs):

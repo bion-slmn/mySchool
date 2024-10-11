@@ -25,14 +25,31 @@ const RegisterPayment = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const [resultData, setResultData] = useState(null);
 
-  let { handleSubmit, error } = useFormSubmit(
+  const { handleSubmit, error } = useFormSubmit(
     "api/school/create-payment/",
-    formData, // Pass formData directly
-    () => {
+    formData,
+    (data) => {
       setSubmitted(true);
+      setResultData(data);
+      setShowForm(false);
+      setFormData({
+        amount: "",
+        date_paid: "",
+        payment_method: "",
+        reference_number: "",
+        fee: "",
+        student: "",
+        grade: "",
+      });
+      setErrorMessage(""); // Clear error message on success
     },
-    true,
+    (error) => {
+      // This is where you handle errors from the submission
+      setErrorMessage(error.message || "An unknown error occurred.");
+      setIsLoading(false);
+    },
     setIsLoading
   );
 
@@ -45,24 +62,39 @@ const RegisterPayment = () => {
   };
 
   const handleShowForm = async () => {
-    const url = `api/school/view-all-grades/`;
-    setIsLoading(true);
+    if (!showForm) {
+      const url = `api/school/view-all-grades/`;
+      setIsLoading(true);
 
-    try {
-      const [data, urlError] = await fetchData("GET", url);
-      setIsLoading(false);
+      try {
+        const [data, urlError] = await fetchData("GET", url);
+        setIsLoading(false);
 
-      if (urlError) {
-        setErrorMessage(urlError);
-      } else {
-        console.log(data); // Check data and urlError
-        setGrades(data);
-        setShowForm(!showForm);
+        if (urlError) {
+          setErrorMessage(urlError);
+        } else {
+          console.log(data); // Check data and urlError
+          setGrades(data);
+          setShowForm(!showForm);
+          setErrorMessage("");
+        }
+      } catch (err) {
+        console.error("An unexpected error occurred:", err);
         setErrorMessage("");
       }
-    } catch (err) {
-      console.error("An unexpected error occurred:", err);
+    } else {
       setErrorMessage("");
+      setResultData(null);
+      setFormData({
+        amount: "",
+        date_paid: "",
+        payment_method: "",
+        reference_number: "",
+        fee: "",
+        student: "",
+        grade: "",
+      }); // Reset formData when hiding the form
+      setShowForm(false);
     }
   };
 
@@ -109,6 +141,13 @@ const RegisterPayment = () => {
       fetchFees();
     }
   }, [formData.grade]);
+
+  useEffect(() => {
+    if (error || resultData || errorMessage) {
+      setShowForm(false);
+    }
+    console.log(submitted, 121212, "submitted");
+  }, [error, resultData, errorMessage]);
 
   return (
     <div className="StudentRegister">
@@ -201,8 +240,8 @@ const RegisterPayment = () => {
           <SubmitButton text="Register Payment" isLoading={isLoading} />
         </form>
       )}
-
-      {submitted && <HandleResult error={error} />}
+      {error && <Error error={errorMessage} />}
+      {resultData && <HandleResult results={resultData} />}
     </div>
   );
 };
