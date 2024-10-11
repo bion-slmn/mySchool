@@ -40,6 +40,7 @@ export const SearchResults = () => {
   const [error, setError] = useState("");
   const { searchInput } = useParams();
   const navigate = useNavigate();
+  const { checkTokenAndRefresh } = useAuth();
 
   useEffect(() => {
     console.log(searchInput, 121212);
@@ -160,6 +161,7 @@ export const GetPaymentDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState("");
+  const { checkTokenAndRefresh } = useAuth();
 
   useEffect(() => {
     setIsLoading(true);
