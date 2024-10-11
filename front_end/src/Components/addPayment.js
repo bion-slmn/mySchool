@@ -5,6 +5,7 @@ import "../styles/form.css";
 import SubmitButton from "./submitButton";
 import RotatingIcon from "./loadingIcon";
 import Error from "./error";
+import { useAuth } from "./AuthProvider";
 
 const RegisterPayment = () => {
   const [formData, setFormData] = useState({
@@ -26,6 +27,7 @@ const RegisterPayment = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const [resultData, setResultData] = useState(null);
+  const { checkTokenAndRefresh } = useAuth();
 
   const { handleSubmit, error } = useFormSubmit(
     "api/school/create-payment/",
@@ -67,7 +69,11 @@ const RegisterPayment = () => {
       setIsLoading(true);
 
       try {
-        const [data, urlError] = await fetchData("GET", url);
+        const [data, urlError] = await fetchData(
+          "GET",
+          url,
+          checkTokenAndRefresh
+        );
         setIsLoading(false);
 
         if (urlError) {
@@ -104,7 +110,11 @@ const RegisterPayment = () => {
       const fetchStudent = async () => {
         try {
           const url = `api/school/students-in-grade/${formData.grade}/`;
-          const [data, urlError] = await fetchData("GET", url);
+          const [data, urlError] = await fetchData(
+            "GET",
+            url,
+            checkTokenAndRefresh
+          );
           setIsLoading(false);
           if (urlError) {
             setErrorMessage(urlError);
@@ -126,7 +136,11 @@ const RegisterPayment = () => {
       const fetchFees = async () => {
         try {
           const url = `api/school/fees-in-grade/${formData.grade}/`;
-          const [data, urlError] = await fetchData("GET", url);
+          const [data, urlError] = await fetchData(
+            "GET",
+            url,
+            checkTokenAndRefresh
+          );
           setIsLoading(false);
           if (urlError) {
             setErrorMessage(urlError);

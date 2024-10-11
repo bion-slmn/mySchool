@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/results.css";
 import { useState } from "react";
+import { useAuth } from "./AuthProvider";
 
 const handleErrors = (response) => {
   if (response.status === 403) {
@@ -24,11 +25,14 @@ export const useFormSubmit = (
 ) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { checkTokenAndRefresh } = useAuth();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const url = "http://127.0.0.1:8000/" + endpoint;
     let result;
+
+    await checkTokenAndRefresh();
 
     try {
       setIsLoading(true);
@@ -156,11 +160,18 @@ export const HandleResult = ({ results }) => {
  * @param {string} endpoint - The API endpoint URL.
  * @returns {Promise<{ data: any, urlError: string }>} - An object containing the response data and any error message.
  */
-export const fetchData = async (endpoint_method, endpoint) => {
+export const fetchData = async (
+  endpoint_method,
+  endpoint,
+  checkTokenAndRefresh = null
+) => {
   let data = null; // Initialize data to null
   let urlError = ""; // Initialize error message to an empty string
   const url = "http://127.0.0.1:8000/" + endpoint;
-  console.log(url, 1212121212);
+
+  if (checkTokenAndRefresh) {
+    await checkTokenAndRefresh();
+  }
 
   try {
     const response = await fetch(url, {

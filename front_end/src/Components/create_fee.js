@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Components/AuthProvider";
 import { useFormSubmit, HandleResult, fetchData } from "./form";
 import { useState, useEffect, useCallback } from "react";
 import RotatingIcon from "./loadingIcon";
@@ -33,6 +33,7 @@ const CreateFee = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [resultData, setResultData] = useState(null);
+  const { checkTokenAndRefresh } = useAuth();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -71,7 +72,11 @@ const CreateFee = () => {
   const fetchDataFromAPI = async (url, data_type, endpoint_method = "GET") => {
     setIsLoading(true);
     try {
-      const [data, urlError] = await fetchData(endpoint_method, url);
+      const [data, urlError] = await fetchData(
+        endpoint_method,
+        url,
+        checkTokenAndRefresh
+      );
       setIsLoading(false);
 
       if (urlError) {

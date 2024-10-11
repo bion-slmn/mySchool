@@ -3,10 +3,12 @@ import { fetchData } from "./form";
 import { PageLoading } from "./loadingIcon";
 import { useNavigate, useParams } from "react-router-dom";
 import "../styles/search.css";
+import { useAuth } from "./AuthProvider";
 
 const SearchBar = () => {
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
+  const { checkTokenAndRefresh } = useAuth();
 
   const handleChange = (e) => {
     setSearchInput(e.target.value);
@@ -45,7 +47,7 @@ export const SearchResults = () => {
       setIsLoading(true);
       try {
         const url = `api/school/search/?search=${searchInput}`;
-        const [data, error] = await fetchData("GET", url);
+        const [data, error] = await fetchData("GET", url, checkTokenAndRefresh);
         setIsLoading(false);
         if (error) {
           console.log(error);
@@ -164,7 +166,7 @@ export const GetPaymentDetails = () => {
     const fetchPaymentDetails = async () => {
       try {
         const url = `api/school/get-student-detail/?id=${id}`;
-        const [data, error] = await fetchData("GET", url);
+        const [data, error] = await fetchData("GET", url, checkTokenAndRefresh);
         setIsLoading(false);
         if (error) {
           console.log(error);

@@ -4,6 +4,7 @@ import { useState } from "react";
 import "../styles/form.css";
 import SubmitButton from "./submitButton";
 import RotatingIcon from "./loadingIcon";
+import { useAuth } from "./AuthProvider";
 
 const RegisterStudent = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const RegisterStudent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [resultData, setResultData] = useState(null);
   const navigate = useNavigate();
+  const { checkTokenAndRefresh } = useAuth();
 
   // Update handleSubmit to use the correct form data
   let { handleSubmit, error } = useFormSubmit(
@@ -49,7 +51,11 @@ const RegisterStudent = () => {
     setIsLoading(true);
 
     try {
-      const [data, urlError] = await fetchData("GET", url);
+      const [data, urlError] = await fetchData(
+        "GET",
+        url,
+        checkTokenAndRefresh
+      );
       setIsLoading(false);
 
       if (urlError) {

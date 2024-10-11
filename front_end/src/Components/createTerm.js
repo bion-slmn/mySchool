@@ -55,7 +55,10 @@ const CreateTerm = () => {
     if (error) {
       setSubmitError(error); // Set the error state
     }
-  }, [error]);
+    if (resultData || error) {
+      setShowForm(false);
+    } // Hide the form on successful submission
+  }, [error, resultData]);
 
   return (
     <div className="Register">
