@@ -3,7 +3,32 @@ import { useState } from "react";
 import "../styles/home.css";
 import SearchBar from "../Components/searchBar";
 import { Greeting } from "./greeting";
-import CreateTerm from "../Components/createTerm";
+import { CreateDailyFee, AddDailyPayments } from "../Components/dailyPayments";
+
+export const Dropdown = () => {
+  return (
+    <>
+      <Link to="/register-school" className="dropdown-item">
+        Register School
+      </Link>
+      <Link to="/register-grade" className="dropdown-item">
+        Register Grade
+      </Link>
+      <Link to="/create-term" className="dropdown-item">
+        Create a term
+      </Link>
+      <Link to="/register-student" className="dropdown-item">
+        Register Student
+      </Link>
+      <Link to="/create-fee" className="dropdown-item">
+        Create Fee
+      </Link>
+      <Link to="/register-payment" className="dropdown-item">
+        Register Payment
+      </Link>
+    </>
+  );
+};
 
 function Home() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -29,7 +54,6 @@ function Home() {
           and accuracy.
         </p>
         <SearchBar />
-        <CreateTerm />
       </header>
 
       <section className="home-actions">
@@ -42,25 +66,12 @@ function Home() {
           </button>
           {isDropdownOpen && (
             <div className="dropdown-menu">
-              <Link to="/register-school" className="dropdown-item">
-                Register School
-              </Link>
-              <Link to="/register-grade" className="dropdown-item">
-                Register Grade
-              </Link>
-              <Link to="/create-fee" className="dropdown-item">
-                Create Fee
-              </Link>
-              <Link to="/register-payment" className="dropdown-item">
-                Register Payment
-              </Link>
-              <Link to="/register-student" className="dropdown-item">
-                Register Student
-              </Link>
+              <Dropdown />
             </div>
           )}
         </div>
       </section>
+      <AddDailyPayments />
       <div style={{ height: 250 }}></div>
     </div>
   );

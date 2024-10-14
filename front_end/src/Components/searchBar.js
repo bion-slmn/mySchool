@@ -8,7 +8,6 @@ import { useAuth } from "./AuthProvider";
 const SearchBar = () => {
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
-  const { checkTokenAndRefresh } = useAuth();
 
   const handleChange = (e) => {
     setSearchInput(e.target.value);
@@ -63,7 +62,7 @@ export const SearchResults = () => {
     };
 
     fetchSearch();
-  }, []);
+  }, [searchInput]);
 
   const handleClick = (id) => {
     console.log(id);
@@ -85,7 +84,7 @@ export const SearchResults = () => {
     <div className="feecontainer" style={{ marginTop: "20px" }}>
       <SearchBar />
       {isLoading && <PageLoading />}
-
+      <small>Click on a student to view payment details</small>
       <table className="searchresult-table">
         <caption>Results for {searchInput}</caption>
         <thead>
@@ -131,7 +130,6 @@ const ViewPaymentDetails = ({ studentPayments }) => {
             <h4>{term}</h4>
             <span>Total paid: {paymentDetails.total}</span>
             <table className="searchresult-table">
-              <caption>Payments for {term}</caption>
               <thead>
                 <tr>
                   <th>Date</th>

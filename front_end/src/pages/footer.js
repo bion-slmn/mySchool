@@ -1,6 +1,6 @@
 import "../styles/footer.css";
 
-const getCurrentYear = () => {
+export const getCurrentYear = () => {
   return new Date().getFullYear();
 };
 

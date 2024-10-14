@@ -17,6 +17,13 @@ form {
   }
 }
 
+button:disabled {
+  background-color: #ccc; /* Light grey */
+  color: #666; /* Darker grey for text */
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 
 
 input,
@@ -38,10 +45,10 @@ input::placeholder, textarea::placeholder {
   color: gray;
 }
 
-input:required:invalid,
-select:required:invalid,
-textarea:required:invalid {
-  border-color: red; /* Border turns red if the field is invalid */
+input:required:focus:invalid,
+select:required:focus:invalid,
+textarea:required:focus:invalid {
+  border-color: red; /* Border turns red if the field is invalid and focused */
   animation: shake 0.3s ease-in-out; /* Add shake animation */
 }
 
@@ -152,6 +159,12 @@ div .Register {
   color: white;
   background-color: purple;
   transition: all 0.3s ease; /* Smooth transition for visual effects */
+}
+
+.payment-amounts{
+ width: 75%;
+ margin: auto;
+ padding: 5px 20px;
 }
 
 /* Keyframes for shake animation */

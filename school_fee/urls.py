@@ -1,10 +1,11 @@
 from django.urls import path
 from .views.school_view import SchoolView, CreateSchool
 from .views.grade_view import GradeView, StudentInGradeView
-from .views.fee_view import FeeView, FeePercentageCollected, GradeFeeView, FeePerTerm
+from .views.fee_view import (FeeView, FeePercentageCollected, 
+                             GradeFeeView, FeePerTerm, DailyFeeView)
 from .views.student_view import StudentView, CreateStudent, PromoteStudent
 from .views.payment_views import (PaymentonFee, CreatePaymentView,
-                                   PaymentPerStudent, )
+                                   PaymentPerStudent, DailyPaymentView)
 from .views.term_view import TermView
 from .views.search_view import GetDetailView, SearchView
 
@@ -32,12 +33,14 @@ urlpatterns = [
     path('create-fee/', FeeView.as_view()),
     path('percentage-fee-per-grade/', FeePercentageCollected.as_view()),
     path('fees-in-grade/<str:grade_id>/', GradeFeeView.as_view()),
+    path('daily-fee/<str:grade_id>/', DailyFeeView.as_view()),
 
     # route for payments
     path('payment-on-fee/<str:fee_id>/', PaymentonFee.as_view()),
     path('create-payment/', CreatePaymentView.as_view(), name='create-payment'),
     path('payments-per-student/<str:fee_id>/', PaymentPerStudent.as_view()),
     path('fee-per-term/<str:term_id>/', FeePerTerm.as_view()),
+    path('create-daily-payment/', DailyPaymentView.as_view()),
 
     # search routes
     path('search/', SearchView.as_view()),

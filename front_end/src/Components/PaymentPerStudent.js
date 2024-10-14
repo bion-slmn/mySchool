@@ -4,19 +4,25 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import "../styles/table.css";
 import { PageLoading } from "./loadingIcon";
+import { useAuth } from "./AuthProvider";
 
 const PaymentsPerStudent = () => {
   const { feeId, studentID, feeName } = useParams();
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { checkTokenAndRefresh } = useAuth();
 
   React.useEffect(() => {
     const fetchPaymentData = async () => {
       setIsLoading(true);
       try {
         const url = `api/school/payments-per-student/${feeId}/?student_id=${studentID}`;
-        const [data, urlError] = await fetchData("GET", url);
+        const [data, urlError] = await fetchData(
+          "GET",
+          url,
+          checkTokenAndRefresh
+        );
         if (urlError) {
           console.error(urlError);
           setError(urlError);
@@ -54,7 +60,7 @@ const PaymentsPerStudent = () => {
   return (
     <div className="feecontainer">
       <h3>
-        School Fee Payments for {feeName} by {data[0]?.student_name}
+        {data[0]?.student_name} Payments Statement {feeName}
       </h3>
       <h4>Total amount: Kshs {totalAmount.toFixed(2)}</h4>{" "}
       {/* Display total amount */}

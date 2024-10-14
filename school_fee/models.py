@@ -100,6 +100,9 @@ class Student(BaseModel):
         related_name='students'
     )
 
+    class Meta:
+        unique_together = ('name', 'date_of_birth') 
+
 
 class Grade(BaseModel):
     """
@@ -190,15 +193,16 @@ class Fee(BaseModel):
 
     def set_name(self):
         year = timezone.now().year
+        today = timezone.now().date()
         if self.fee_type == "ADMISSION":
-            self.name = f'{self.fee_type}--{year}-{self.total_amount} Fee'
+            self.name = f'{self.fee_type}-{year}-{self.total_amount} Fee'
+        elif self.fee_type == "DAILY":
+            self.name = f'{self.name} {self.grade.name} - {self.term.name} {today} Fee'
         else:            
             self.name = f'{self.grade.name} - {self.term.name} - {self.fee_type} Fee'
-            print(self.name)
             
     def save(self, *args, **kwargs):
-        if not self.name:
-            self.set_name()
+        self.set_name()
 
         if self.term is None and self.fee_type != "ADMISSION":
             raise ValidationError('A term is required for fee types other than ADMISSION.')

@@ -15,6 +15,22 @@
   text-decoration: none;
 }
 
+.seeRegister{
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
+  color: green;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.seeRegister:hover{
+  color: #fff;
+  background-color: green;
+  
+}
+
+
 .navbar-right {
   display: flex;
   align-items: center;

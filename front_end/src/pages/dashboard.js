@@ -3,6 +3,7 @@ import { fetchData } from "../Components/form";
 import Error from "../Components/error";
 import GradeandFees from "../Components/GradeandFees";
 import { PageLoading } from "../Components/loadingIcon";
+import { useAuth } from "../Components/AuthProvider";
 
 const Dashboard = () => {
   const [feeData, setFeeData] = useState([]);
@@ -12,12 +13,17 @@ const Dashboard = () => {
     term: "",
   });
   const [terms, setTerms] = useState([]);
+  const { checkTokenAndRefresh } = useAuth();
 
   // Fetch the active term on component mount
   const fetchTermId = async () => {
     try {
       const url = "api/school/view-terms/?status=True"; // Fetch active terms
-      const [data, urlError] = await fetchData("GET", url);
+      const [data, urlError] = await fetchData(
+        "GET",
+        url,
+        checkTokenAndRefresh
+      );
       if (urlError) {
         setError(urlError);
         console.log(urlError);
@@ -40,7 +46,11 @@ const Dashboard = () => {
     setIsLoading(true);
     try {
       const url = `api/school/percentage-fee-per-grade/?term_id=${termId}`;
-      const [data, urlError] = await fetchData("GET", url);
+      const [data, urlError] = await fetchData(
+        "GET",
+        url,
+        checkTokenAndRefresh
+      );
       setIsLoading(false);
       if (urlError) {
         setError(urlError);

@@ -3,23 +3,34 @@ import "../styles/progressbar.css";
 
 const ProgressBar = (props) => {
   const { completed } = props;
+
+  // Ensure the progress does not exceed 100%
+  const safeCompleted = Math.min(completed, 100);
+
   let bgcolor;
+  let font_color = "black";
 
   if (completed <= 30) {
-    bgcolor = "#E92727";
+    bgcolor = "red"; // #FF0000
   } else if (completed > 30 && completed <= 60) {
-    bgcolor = "orange";
+    bgcolor = "orange"; // #FFA500
   } else {
-    bgcolor = "#30CB00";
+    bgcolor = "#30CB00"; // Bright Green
   }
 
   return (
     <div className="progress-container">
       <div
         className="progress-filler"
-        style={{ width: `${completed}%`, backgroundColor: bgcolor }}
+        style={{
+          width: `${safeCompleted}%`,
+          backgroundColor: bgcolor,
+        }}
       >
-        <span className="progress-label">{`${completed}%`}</span>
+        <small
+          className="progress-label"
+          style={{ color: font_color }}
+        >{`${completed}%`}</small>
       </div>
     </div>
   );

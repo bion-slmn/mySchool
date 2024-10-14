@@ -3,13 +3,14 @@ from ..models import Fee, Payment, Student
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpRequest
-from ..serializers import PaymentSerializer
+from ..serializers import PaymentSerializer, PaymentBulkSerializer
 from ..decorator import handle_exceptions
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from .fee_view import group_by_key
 from typing import List, Dict, Any
 from collections import defaultdict
+from django.db import transaction
 
 
 class PaymentonFee(APIView):
@@ -131,3 +132,51 @@ class PaymentPerStudent(APIView):
         serializer = PaymentSerializer(payments, many=True)
         return Response(serializer.data, 200)
     
+
+class DailyPaymentView(APIView):
+    permission_classes = [AllowAny]
+   
+
+    #@handle_exceptions
+    #@transaction.atomic  # Ensures all or nothing behavior
+    def post(self, request):
+        """
+        Create multiple payment records for students in one database operation.
+        """
+        payment_data = request.data.copy()
+        payment_dict = payment_data.pop('payments', None)
+
+        if not payment_dict:
+            return Response(
+                {"detail": "Payment details must be a non-empty dict."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        student_ids = payment_dict.keys()
+        existing_students = Student.objects.filter(id__in=student_ids)
+
+        # Ensure all provided student IDs exist
+        if len(existing_students) != len(student_ids):
+            missing_ids = set(student_ids) - set(existing_students.values_list('id', flat=True))
+            return Response(
+                {"detail": f"Some student IDs don't exist: {missing_ids}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+        # Prepare payment instances
+        payment_instances = [
+            {
+                'student': student_id,
+                'amount': amount,
+                **payment_data,
+            }
+            for student_id, amount in payment_dict.items()
+        ]
+        print(payment_instances, 2323)
+        # Use the bulk serializer to create payments
+        serializer = PaymentBulkSerializer(data=payment_instances, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

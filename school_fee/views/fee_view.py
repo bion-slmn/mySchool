@@ -85,6 +85,7 @@ class FeeView(APIView):
 
         if fee_data.get("fee_type") == "ADMISSION":
             serializer.save()
+
             return Response(serializer.data, 201)
         
         grades = self.validate_grade_id(request)
@@ -163,11 +164,42 @@ class GradeFeeView(APIView):
 
         Returns:
             Response: A Response object containing the fee details for the specified grade.
-        """
+        """ 
+        results = []
+        admission_fee = Fee.objects.filter(fee_type='ADMISSION').values('id', 'name', 'total_amount')
 
+        if admission_status := request.query_params.get('admission_status'):
+            results = [*admission_fee]
+        else:
+            grade = get_object_or_404(Grade, id=grade_id)
+            fee = grade.fees.all().values('id', 'name', 'total_amount')
+            results = [*fee, *admission_fee]
+        return Response(results, 200)
+
+
+class DailyFeeView(APIView):
+    permission_classes = [AllowAny]
+    @handle_exceptions
+    def get(self, request: HttpRequest, grade_id) -> Response:
+        """
+        Handles GET requests to retrieve daily fee information for a specific grade.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            grade_id (int): The ID of the grade for which to retrieve daily fee information.
+
+        Returns:
+            Response: A Response object containing the daily fee details for the specified grade.
+        """
         grade = get_object_or_404(Grade, id=grade_id)
-        fee = grade.fees.all().values('id', 'name', 'total_amount')
-        return Response(fee, 200)
+        if date := request.query_params.get('created_at'):
+            daily_fee = Fee.objects.filter(grade=grade_id, fee_type='DAILY', created_at__contains=date)
+        else:
+            daily_fee = Fee.objects.filter(grade=grade, fee_type='DAILY')
+        daily_fee = daily_fee.values('id', 'name', 'total_amount', 'created_at')
+        return Response(daily_fee, 200)
+
+    
 
 
 class FeePerTerm(APIView):

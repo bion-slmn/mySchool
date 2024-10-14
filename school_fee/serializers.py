@@ -58,7 +58,7 @@ class FeeSerializer(BaseSerializer):
     '''
     class Meta:
         model = Fee
-        fields = '__all__'
+        exclude = ['school']
 
 class TermSerializer(BaseSerializer):
     '''
@@ -85,4 +85,18 @@ class PaymentSerializer(BaseSerializer):
     class Meta:
         model = Payment
         fields = ['id', 'student', 'student_name', 'fee', 'amount', 'date_paid', 'payment_method', 'reference_number']
+
+class BulkCreateListSerializer(serializers.ListSerializer):
+    """Custom ListSerializer for bulk creation."""
+    
+    def create(self, validated_data):
+        payments = [Payment(**item) for item in validated_data]
+        return Payment.objects.bulk_create(payments)
+
+class PaymentBulkSerializer(serializers.ModelSerializer):
+    date_paid = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
+    class Meta:
+        model = Payment
+        fields = ['student', 'amount', 'date_paid', 'payment_method', 'fee']
+        list_serializer_class = BulkCreateListSerializer
 

@@ -3,6 +3,7 @@ import { useFormSubmit, HandleResult } from "./form";
 import "../styles/form.css";
 import SubmitButton from "./submitButton";
 import Error from "./error";
+import { useEffect } from "react";
 
 const RegisterSchool = () => {
   const [school, setSchool] = useState("");
@@ -22,10 +23,17 @@ const RegisterSchool = () => {
     setIsLoading
   );
 
+  useEffect(() => {
+    if (error || resultData) {
+      setShowForm(false);
+    }
+  }, [resultData, error]);
+
   const handleShowForm = () => {
     setShowForm(!showForm);
-    // Clear the error message when showing the form
-    error = ""; // Clear previous results
+    setResultData(null);
+
+    // Clear the error message when showing the form // Clear previous results
   };
 
   return (

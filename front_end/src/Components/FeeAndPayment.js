@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../styles/table.css";
 import { PageLoading } from "./loadingIcon";
+import { useAuth } from "./AuthProvider";
 
 const FeeAndPayment = () => {
   const { feeId, feeName, feeToPay } = useParams();
@@ -11,6 +12,7 @@ const FeeAndPayment = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { checkTokenAndRefresh } = useAuth();
 
   const handleClick = (feeId, feeName, studentID, amount) => {
     if (amount) {
@@ -23,7 +25,11 @@ const FeeAndPayment = () => {
       setIsLoading(true);
       try {
         const url = `api/school/payment-on-fee/${feeId}/`;
-        const [data, urlError] = await fetchData("GET", url);
+        const [data, urlError] = await fetchData(
+          "GET",
+          url,
+          checkTokenAndRefresh
+        );
         if (urlError) {
           navigate("/login");
           console.error(urlError);
@@ -61,8 +67,9 @@ const FeeAndPayment = () => {
 
   return (
     <div className="feecontainer">
+      <h3>Payments for {feeName}</h3>
+      <small>Click on a student to view payment details</small>
       <table className="payment-table">
-        <caption>Fees and Payments for {feeName}</caption>
         <thead>
           <tr>
             <th>Student Name</th>

@@ -6,16 +6,20 @@ import SubmitButton from "./submitButton";
 import RotatingIcon from "./loadingIcon";
 import Error from "./error";
 import { useAuth } from "./AuthProvider";
+import { useLocation } from "react-router-dom";
 
 const RegisterPayment = () => {
+  const location = useLocation();
+  const { student_id, name, registerationType, grade, grade_id } =
+    location.state || {};
   const [formData, setFormData] = useState({
     amount: "",
     date_paid: "",
     payment_method: "",
     reference_number: "",
     fee: "",
-    student: "",
-    grade: "",
+    student: student_id || "",
+    grade: grade_id || "",
   });
 
   const [fees, setFees] = useState([]); // To store fees fetched from the API
@@ -29,6 +33,8 @@ const RegisterPayment = () => {
   const [resultData, setResultData] = useState(null);
   const { checkTokenAndRefresh } = useAuth();
 
+  console.log(name, registerationType, "name, registerationType");
+
   const { handleSubmit, error } = useFormSubmit(
     "api/school/create-payment/",
     formData,
@@ -36,15 +42,7 @@ const RegisterPayment = () => {
       setSubmitted(true);
       setResultData(data);
       setShowForm(false);
-      setFormData({
-        amount: "",
-        date_paid: "",
-        payment_method: "",
-        reference_number: "",
-        fee: "",
-        student: "",
-        grade: "",
-      });
+      setFormData({});
       setErrorMessage(""); // Clear error message on success
     },
     (error) => {
@@ -64,6 +62,11 @@ const RegisterPayment = () => {
   };
 
   const handleShowForm = async () => {
+    if (resultData || error) {
+      console.log("resultData", resultData);
+      setResultData(null);
+      setErrorMessage("");
+    }
     if (!showForm) {
       const url = `api/school/view-all-grades/`;
       setIsLoading(true);
@@ -91,15 +94,7 @@ const RegisterPayment = () => {
     } else {
       setErrorMessage("");
       setResultData(null);
-      setFormData({
-        amount: "",
-        date_paid: "",
-        payment_method: "",
-        reference_number: "",
-        fee: "",
-        student: "",
-        grade: "",
-      }); // Reset formData when hiding the form
+      setFormData({}); // Reset formData when hiding the form
       setShowForm(false);
     }
   };
@@ -133,9 +128,15 @@ const RegisterPayment = () => {
   useEffect(() => {
     if (formData.grade) {
       setIsLoading(true);
+      let url;
       const fetchFees = async () => {
         try {
-          const url = `api/school/fees-in-grade/${formData.grade}/`;
+          if (registerationType === "admission") {
+            url = `api/school/fees-in-grade/${formData.grade}/?admission_status=true`;
+          } else {
+            url = `api/school/fees-in-grade/${formData.grade}/`;
+          }
+          console.log(url, "url", registerationType);
           const [data, urlError] = await fetchData(
             "GET",
             url,
@@ -191,20 +192,7 @@ const RegisterPayment = () => {
               </option>
             ))}
           </select>
-          <label>Select Student Name</label>
-          <select
-            name="student"
-            value={formData.student}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select Student</option>
-            {students.map((student) => (
-              <option key={student.id} value={student.id}>
-                {student.name}
-              </option>
-            ))}
-          </select>
+
           <label>Select Fee</label>
           <select
             name="fee"
@@ -216,6 +204,20 @@ const RegisterPayment = () => {
             {fees.map((fee) => (
               <option key={fee.id} value={fee.id}>
                 {fee.name}
+              </option>
+            ))}
+          </select>
+          <label>Select Student Name</label>
+          <select
+            name="student"
+            value={formData.student}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="">Select Student</option>
+            {students.map((student) => (
+              <option key={student.id} value={student.id}>
+                {student.name}
               </option>
             ))}
           </select>

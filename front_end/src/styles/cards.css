@@ -1,7 +1,9 @@
 .container {
-    width: 100%;
+    width: 80%;
     padding: 20px;
     margin: auto;
+    background-color: whitesmoke;
+    border-radius: 10px;
   }
   
   .gradeSection {
@@ -26,13 +28,18 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
     cursor: pointer;
-    background-color: #32de84;
+    background-color: green;
   }
 
   .card p{
     text-align: left;
     font-weight: 500;
     font-size: 13px;
+    
+  }
+  
+  .total p{
+    color: whitesmoke;
   }
 
   .cardContent{
@@ -49,3 +56,8 @@
  progress{
   height: 30px;
  }
+
+.gradeTotal{
+  text-align: left;
+  color: black;
+}

@@ -205,6 +205,21 @@ curl localhost:8000/api/school/get-student-detail/?id=ef0c3271-a30c-4ed0-aba1-53
 }
 }
 
+## VIEW DAILY FEE
+You can pass the option of created_at to select the date
 ```
+curl localhost:8000/api/school/daily-fee/674e38c3-6178-49a0-b9e5-e315701eff27/
 
+[
+  {
+    "id": "d18f2708-295a-437f-bd88-e9f9bbc175f9",
+    "name": "grade 4 -- Term 3 2024 - DAILY Fee",
+    "total_amount": 12
+  },
+  {
+    "id": "dfb1b9f3-b312-4583-98cb-d374facb890a",
+    "name": "Bion Solomon grade 4 - Term 1 2024 2024-10-14 Fee",
+    "total_amount": 20
+  }
+]
 ```

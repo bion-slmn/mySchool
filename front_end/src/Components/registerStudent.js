@@ -5,6 +5,7 @@ import "../styles/form.css";
 import SubmitButton from "./submitButton";
 import RotatingIcon from "./loadingIcon";
 import { useAuth } from "./AuthProvider";
+import { useEffect } from "react";
 
 const RegisterStudent = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const RegisterStudent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [resultData, setResultData] = useState(null);
+  const [isadmission, setIsAdmission] = useState(false);
   const navigate = useNavigate();
   const { checkTokenAndRefresh } = useAuth();
 
@@ -72,9 +74,43 @@ const RegisterStudent = () => {
     }
   };
 
+  const handeRegisteratoion = (e) => {
+    setIsAdmission(e.target.value);
+    setShowForm(true);
+    handleShowForm();
+  };
+
+  useEffect(() => {
+    if (resultData && !error && isadmission == "admission") {
+      const studentInfo = {
+        student_id: resultData.id,
+        name: resultData.name,
+        grade: formData.grade,
+        grade_id: resultData.grade_id,
+        registerationType: "admission",
+      };
+      setTimeout(() => {
+        navigate("/register-payment", { state: studentInfo });
+      }, 2000);
+    }
+  }, [resultData, error, navigate]);
+
   return (
     <div className="Register">
       <h2>Register a student</h2>
+      <label>Select the Registration Type</label>
+      <select
+        className="student"
+        name="fee_type"
+        value={formData.fee_type}
+        onChange={handeRegisteratoion}
+        required
+      >
+        <option value="">Select Registration Type</option>
+        <option value="admission">New Student Admission</option>
+        <option value="not admission">Returning Student Registration</option>
+      </select>
+
       <button
         className="menu student"
         onClick={handleShowForm}
@@ -130,7 +166,14 @@ const RegisterStudent = () => {
               </option>
             ))}
           </select>
-          <SubmitButton text="Register Student" isLoading={isLoading} />
+          <SubmitButton
+            text={
+              isadmission == "admission"
+                ? "Register and Continue"
+                : "Register Student"
+            }
+            isLoading={isLoading}
+          />
         </form>
       )}
 

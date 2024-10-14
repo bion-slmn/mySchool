@@ -17,6 +17,7 @@ import AuthProvider from "./Components/AuthProvider.js";
 import PrivateRoute from "./Components/PrivateRoute.js";
 import { SearchResults } from "./Components/searchBar.js";
 import { GetPaymentDetails } from "./Components/searchBar.js";
+import CreateTerm from "./Components/createTerm.js";
 import Footer from "./pages/footer.js";
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="register-student" element={<RegisterStudent />} />
             <Route path="create-fee" element={<CreateFee />} />
             <Route path="register-payment" element={<RegisterPayment />} />
+            <Route path="create-term" element={<CreateTerm />} />
             <Route
               path="/fee/:feeName/:feeId/:feeToPay"
               element={<FeeAndPayment />}
