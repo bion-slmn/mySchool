@@ -136,6 +136,12 @@ const CreateFee = () => {
     }
   );
 
+  useEffect(() => {
+    if (error || resultData) {
+      setShowForm(false);
+    }
+  }, [error, resultData]);
+
   return (
     <div className="Register">
       <h2>Create a fee</h2>
@@ -228,10 +234,12 @@ const CreateFee = () => {
             required
           />
 
-          <SubmitButton text="Create Fee" isLoading={isLoading} />
+          {formData.grade_ids.length > 0 && (
+            <SubmitButton text="Create Fee" isLoading={isLoading} />
+          )}
         </form>
       )}
-      {errorMessage && <Error error={errorMessage} />}
+      {errorMessage || (error && <Error error={errorMessage || error} />)}
       {resultData && <HandleResult results={resultData} />}
     </div>
   );

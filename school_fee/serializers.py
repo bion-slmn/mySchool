@@ -58,7 +58,7 @@ class FeeSerializer(BaseSerializer):
     '''
     class Meta:
         model = Fee
-        exclude = ['school']
+        fields = '__all__'
 
 class TermSerializer(BaseSerializer):
     '''
