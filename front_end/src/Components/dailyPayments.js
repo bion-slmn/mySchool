@@ -129,13 +129,14 @@ export const CreateDailyFee = () => {
         />
         <label>Description</label>
         <textarea
+          className="description"
           name="description"
           placeholder="Give a description/breakdown of the fee"
           value={feeData.description}
           onChange={handleInputChange}
           required
           rows={4} // Adjust the height of the textarea as needed
-          style={{ width: "100%" }} // Optional: makes it stretch across the form width
+          // Optional: makes it stretch across the form width
         />
 
         <label>Select Term</label>
