@@ -165,6 +165,7 @@ const CreateFee = () => {
             <option value={FeeType.ONCE}>{FeeType.ONCE}</option>
             <option value={FeeType.DAILY}>{FeeType.DAILY}</option>
           </select>
+          <FeeInfo fee_type={formData.fee_type} />
 
           <label>Year</label>
           <input
@@ -244,3 +245,24 @@ const CreateFee = () => {
 };
 
 export default CreateFee;
+
+const FeeInfo = ({ fee_type }) => {
+  return (
+    <div>
+      {fee_type === "ADMISSION" && (
+        <small>Admission fee is applied to all grades, no limit on term</small>
+      )}
+      {fee_type === "TERM" && (
+        <small>Term fee is applied to the grades you choose</small>
+      )}
+      {fee_type === "ONCE" && (
+        <small>Once fee is applied to the grades you choose e.g trip fee</small>
+      )}
+      {fee_type === "DAILY" && (
+        <small>
+          Daily fee is applied to the grades you choose e.g lunch fee
+        </small>
+      )}
+    </div>
+  );
+};
