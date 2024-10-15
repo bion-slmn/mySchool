@@ -19,6 +19,10 @@ import { SearchResults } from "./Components/searchBar.js";
 import { GetPaymentDetails } from "./Components/searchBar.js";
 import CreateTerm from "./Components/createTerm.js";
 import Footer from "./pages/footer.js";
+import {
+  AddDailyPayments,
+  CreateDailyFee,
+} from "./Components/dailyPayments.js";
 
 function App() {
   return (
@@ -39,6 +43,11 @@ function App() {
             <Route path="create-fee" element={<CreateFee />} />
             <Route path="register-payment" element={<RegisterPayment />} />
             <Route path="create-term" element={<CreateTerm />} />
+            <Route path="create-daily-fee" element={<CreateDailyFee />} />
+            <Route
+              path="register-daily-payment"
+              element={<AddDailyPayments />}
+            />
             <Route
               path="/fee/:feeName/:feeId/:feeToPay"
               element={<FeeAndPayment />}

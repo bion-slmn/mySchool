@@ -330,6 +330,7 @@ export const AddDailyPayments = () => {
 
       {showForm && (
         <form onSubmit={handleSubmit} className="StudentForm">
+          <label>Date Paid</label>
           <input
             type="date"
             value={datePaid}
@@ -368,13 +369,7 @@ export const AddDailyPayments = () => {
           </select>
 
           <div className="payment-amounts">
-            <h4>
-              Enter Payment. Total payments:{" "}
-              {Object.values(formData.payments).reduce(
-                (total, amount) => total + (parseFloat(amount) || 0),
-                0
-              )}
-            </h4>
+            <h4>Enter Student Payments.</h4>
             {students.map((student) => (
               <StudentPaymentInput
                 key={student.id}
@@ -383,6 +378,14 @@ export const AddDailyPayments = () => {
                 value={formData.payments[student.id] || ""}
               />
             ))}
+            <hr />
+            <b>
+              Total payments:{" "}
+              {Object.values(formData.payments).reduce(
+                (total, amount) => total + (parseFloat(amount) || 0),
+                0
+              )}
+            </b>
           </div>
 
           {Object.keys(formData.payments).length > 0 && (

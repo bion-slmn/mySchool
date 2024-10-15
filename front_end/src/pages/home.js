@@ -23,8 +23,14 @@ export const Dropdown = () => {
       <Link to="/create-fee" className="dropdown-item">
         Create Fee
       </Link>
+      <Link to="/create-daily-fee" className="dropdown-item">
+        Create Daily Fee
+      </Link>
       <Link to="/register-payment" className="dropdown-item">
         Register Payment
+      </Link>
+      <Link to="/register-daily-payment" className="dropdown-item">
+        Register Daily Payment
       </Link>
     </>
   );
@@ -71,7 +77,7 @@ function Home() {
           )}
         </div>
       </section>
-      <AddDailyPayments />
+
       <div style={{ height: 250 }}></div>
     </div>
   );

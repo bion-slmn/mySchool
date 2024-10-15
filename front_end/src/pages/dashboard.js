@@ -30,10 +30,12 @@ const Dashboard = () => {
         return;
       }
       setTerms(data); // Save all terms in state
-      setFormData((prevState) => ({
-        ...prevState,
-        term: data[0].id, // Set the first active term as default
-      }));
+      if (data.length > 0) {
+        setFormData((prevState) => ({
+          ...prevState,
+          term: data[0].id, // Set the first active term as default
+        }));
+      }
     } catch (err) {
       console.error(err);
       setError(err.message || "An unknown error occurred");
