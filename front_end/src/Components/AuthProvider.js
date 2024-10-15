@@ -23,7 +23,7 @@ const AuthProvider = ({ children }) => {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/user/token/refresh/",
+        "https://myschool-ax55.onrender.com/api/user/token/refresh/",
         {
           method: "POST",
           headers: {
@@ -59,13 +59,16 @@ const AuthProvider = ({ children }) => {
   };
 
   const loginAction = async (data) => {
-    const response = await fetch("http://127.0.0.1:8000/api/user/login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      "https://myschool-ax55.onrender.com/api/user/login/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     const res = await response.json();
     if (response.ok && res.access) {
