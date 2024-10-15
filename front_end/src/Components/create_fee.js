@@ -234,9 +234,7 @@ const CreateFee = () => {
             required
           />
 
-          {formData.grade_ids.length > 0 && (
-            <SubmitButton text="Create Fee" isLoading={isLoading} />
-          )}
+          <SubmitButton text="Create Fee" isLoading={isLoading} />
         </form>
       )}
       {errorMessage || (error && <Error error={errorMessage || error} />)}
