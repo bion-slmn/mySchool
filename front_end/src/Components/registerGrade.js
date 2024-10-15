@@ -13,7 +13,7 @@ const RegisterGrade = () => {
   const [errors, setErrors] = useState("");
   const [resultData, setResultData] = useState(null);
 
-  const { handleSubmit, error } = useFormSubmit(
+  let { handleSubmit, error } = useFormSubmit(
     "api/school/create-grade/",
     { name, description },
     (data) => {
@@ -29,6 +29,7 @@ const RegisterGrade = () => {
     setShowForm(!showForm);
     setErrors(""); // Clear the error message when showing the form
     setResultData(null); // Clear previous results
+    error = "";
   };
 
   useEffect(() => {
