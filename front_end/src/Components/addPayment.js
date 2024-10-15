@@ -166,7 +166,8 @@ const RegisterPayment = () => {
 
   return (
     <div className="StudentRegister">
-      <h2>Register a Payment</h2>
+      <h2>{registerationType ? "Pay Admission Fee" : "Register a Payment"}</h2>
+
       <button
         className="menu payment"
         onClick={handleShowForm}
