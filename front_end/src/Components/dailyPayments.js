@@ -6,6 +6,7 @@ import Error from "./error";
 import SubmitButton from "./submitButton";
 import "../styles/form.css";
 import RotatingIcon from "./loadingIcon";
+import { FeeInfo } from "./create_fee";
 
 export const CreateDailyFee = () => {
   const [feeData, setFeeData] = useState({
@@ -104,6 +105,7 @@ export const CreateDailyFee = () => {
   return (
     <div>
       <h1>Create Daily Fee</h1>
+      <FeeInfo feeData={feeData.fee_type} />
       <form
         onSubmit={handleFormSubmission}
         className="form"

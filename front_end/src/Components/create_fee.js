@@ -10,7 +10,6 @@ const FeeType = {
   ADMISSION: "ADMISSION",
   TERM: "TERM",
   ONCE: "ONCE",
-  DAILY: "DAILY",
 };
 
 const CreateFee = () => {
@@ -246,21 +245,34 @@ const CreateFee = () => {
 
 export default CreateFee;
 
-const FeeInfo = ({ fee_type }) => {
+export const FeeInfo = ({ fee_type }) => {
   return (
     <div>
       {fee_type === "ADMISSION" && (
-        <small>Admission fee is applied to all grades, no limit on term</small>
+        <small>
+          <strong>Admission Fee:</strong> This is a one-time fee required during
+          enrollment. It applies across all grades without restrictions on
+          specific terms.
+        </small>
       )}
       {fee_type === "TERM" && (
-        <small>Term fee is applied to the grades you choose</small>
+        <small>
+          <strong>Term Fee:</strong> This fee recurs at the beginning of each
+          term and applies only to the selected grades. Typically covers general
+          academic costs.
+        </small>
       )}
       {fee_type === "ONCE" && (
-        <small>Once fee is applied to the grades you choose e.g trip fee</small>
+        <small>
+          <strong>One-time Fee:</strong> This is a non-recurring charge, such as
+          a trip or event fee, that applies to the selected grades only when the
+          activity occurs.
+        </small>
       )}
       {fee_type === "DAILY" && (
         <small>
-          Daily fee is applied to the grades you choose e.g lunch fee
+          <strong>Daily Fee:</strong> This fee is charged daily and applies to
+          specific grades, e.g., lunch or transport fees, depending on usage.
         </small>
       )}
     </div>
