@@ -64,3 +64,16 @@ progress {
   text-align: center;
   color: black;
 }
+
+.divider-payments{
+  width: 60%;
+  margin: 20px auto;
+  border : 1px solid #ccc
+}
+
+.divider-total{
+  width: 40%;
+  margin: 30px auto;
+  border : 2px solid #ccc
+}
+

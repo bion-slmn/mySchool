@@ -52,6 +52,22 @@ textarea:required:focus:invalid {
   animation: shake 0.3s ease-in-out; /* Add shake animation */
 }
 
+select, input {
+   
+  border: 1px solid green; /* Green border */
+  border-radius: 5px;
+
+  background-color: white; /* Background color */
+  
+}
+
+select:focus, input:focus {
+  outline: none;
+  border-color: green; /* Darker green for focus state */
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+  background-color : green;
+  columns: white;
+}
 /* Keyframes for shake animation */
 @keyframes shake {
   25% { transform: translateX(-5px); }

@@ -68,13 +68,13 @@ const GradeandFees = ({ data, feeType }) => {
   return (
     <div className="container">
       <h3>Total Paid: Kshs {totalPaid}</h3>
+      <hr className="divider-total" />
       {Object.entries(data).map(([gradeName, fees], index) => (
         <div key={gradeName}>
           <div className="gradeSection">
             <h4 className="gradeTitle">{gradeName}</h4>
             <p className="gradeTotal">
-              Total Paid for {gradeName}: Kshs{" "}
-              {calculateTotalPaidForGrade(fees)}
+              Paid : kes {calculateTotalPaidForGrade(fees)}
             </p>
 
             <div className="cardsContainer">
@@ -113,7 +113,9 @@ const GradeandFees = ({ data, feeType }) => {
               ))}
             </div>
           </div>
-          {index < Object.entries(data).length - 1 && <hr />}
+          {index < Object.entries(data).length - 1 && (
+            <hr className="divider-payments" />
+          )}
         </div>
       ))}
     </div>

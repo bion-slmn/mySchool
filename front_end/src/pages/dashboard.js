@@ -4,6 +4,7 @@ import Error from "../Components/error";
 import GradeandFees from "../Components/GradeandFees";
 import { PageLoading } from "../Components/loadingIcon";
 import { useAuth } from "../Components/AuthProvider";
+import "../styles/dashboard.css";
 
 const Dashboard = () => {
   const date = new Date().toISOString().split("T")[0];
@@ -90,47 +91,55 @@ const Dashboard = () => {
   }, [formData.term, dateCreated, feeType]);
 
   return (
-    <div>
+    <div className="dashboard">
       <h2>Grades with fees</h2>
-      <label>Select Term</label>
-      <select
-        name="term"
-        value={formData.term}
-        onChange={handleInputChange}
-        required
-      >
-        <option value="">Select a term</option>
-        {terms.map((term) => (
-          <option value={term.id} key={term.id}>
-            {term.name}
-          </option>
-        ))}
-      </select>
-      <label>Select Fee Type</label>
-      <select
-        name="fee_type"
-        value={feeType}
-        onChange={(e) => setFeeType(e.target.value)}
-        required
-      >
-        <option value="">Select Fee Type</option>
-        <option value={FeeTypes.ADMISSION}>{FeeTypes.ADMISSION}</option>
-        <option value={FeeTypes.TERM}>{FeeTypes.TERM}</option>
-        <option value={FeeTypes.ONCE}>{FeeTypes.ONCE}</option>
-        <option value={FeeTypes.DAILY}>{FeeTypes.DAILY}</option>
-      </select>
 
-      {feeType === FeeTypes.DAILY && (
-        <div>
-          <label>Date Paid</label>
-          <input
-            type="date"
-            value={dateCreated}
-            onChange={(e) => setDateCreated(e.target.value)}
-            max={date}
-          />
+      <div className="form-row">
+        <div className="form-group">
+          <label>Select Term</label>
+          <select
+            name="term"
+            value={formData.term}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="">Select a term</option>
+            {terms.map((term) => (
+              <option value={term.id} key={term.id}>
+                {term.name}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
+
+        <div className="form-group">
+          <label>Select Fee Type</label>
+          <select
+            name="fee_type"
+            value={feeType}
+            onChange={(e) => setFeeType(e.target.value)}
+            required
+          >
+            <option value="">Select Fee Type</option>
+            <option value={FeeTypes.ADMISSION}>{FeeTypes.ADMISSION}</option>
+            <option value={FeeTypes.TERM}>{FeeTypes.TERM}</option>
+            <option value={FeeTypes.ONCE}>{FeeTypes.ONCE}</option>
+            <option value={FeeTypes.DAILY}>{FeeTypes.DAILY}</option>
+          </select>
+        </div>
+
+        {feeType === FeeTypes.DAILY && (
+          <div className="form-group">
+            <label>Date Paid</label>
+            <input
+              type="date"
+              value={dateCreated}
+              onChange={(e) => setDateCreated(e.target.value)}
+              max={date}
+            />
+          </div>
+        )}
+      </div>
 
       {isLoading && <PageLoading />}
 
