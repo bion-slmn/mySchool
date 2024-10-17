@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/cards.css";
 import ProgressBar from "./progressBar";
 
-const GradeandFees = ({ data }) => {
+const GradeandFees = ({ data, feeType }) => {
   const navigate = useNavigate();
 
   // Navigate to fee details page when the card is clicked
@@ -15,18 +15,23 @@ const GradeandFees = ({ data }) => {
 
   // Calculate the percentage of fee paid for each fee
   const calculatePercentage = (fee) => {
-    if (fee.total_students === 0) {
-      return "0.00";
+    const total_paid = fee.fees__total_paid || fee.total_paid;
+    const total_amount = fee.total_amount || fee.fees__total_amount;
+    const students = fee.total_students;
+
+    if (students === 0 && feeType !== "ADMISSION") {
+      return 0;
     }
 
-    return (
-      (fee.fees__total_paid / (fee.fees__total_amount * fee.total_students)) *
-      100
-    ).toFixed(2);
+    return ((total_paid / (total_amount * students)) * 100).toFixed(2);
   };
 
   // Calculate the total amount paid for a grade
   const calculateTotalPaidForGrade = (fees) => {
+    if (feeType === "ADMISSION") {
+      return fees.total_paid + "/" + fees.total_amount;
+    }
+
     const fee_paid = fees
       .reduce((total, fee) => total + fee.fees__total_paid, 0)
       .toFixed(2);
@@ -58,7 +63,7 @@ const GradeandFees = ({ data }) => {
             <div className="cardsContainer">
               {fees.map((fee) => (
                 <div
-                  key={fee.fees__id}
+                  key={fee.fees__id || fee.id}
                   className="card"
                   onClick={() =>
                     handleCardClick(

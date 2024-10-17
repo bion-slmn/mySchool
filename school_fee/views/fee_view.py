@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from ..models import Fee, Grade, Student, Term
+from ..models import Fee, Grade, Student, Term, FeeType
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpRequest
@@ -10,6 +10,9 @@ from rest_framework.permissions import AllowAny
 from typing import List, Dict, Any
 from collections import defaultdict
 from django.db.models import Count, Prefetch
+from django.db.models import Q
+from django.utils import timezone
+
 
 
 def group_by_key(source: List[Dict[str, Any]],
@@ -131,24 +134,64 @@ class FeePercentageCollected(APIView):
         """
         Get the percentage of fees collected per grade, optimized for performance.
         """
+        today = timezone.now().date()
         term_id = request.query_params.get('term_id')
-        print(term_id,2222)
-        fees_queryset = Fee.objects.filter(term=term_id)
-        grades = Grade.objects.filter(fees__term=term_id
-                                      ).prefetch_related(
-                                          Prefetch('fees', queryset=fees_queryset)
-                                          ).annotate(total_students=Count('students'),
-                                                     ).values(
-                                                         'id',
-                                                        'name',
-                                                        'total_students',
-                                                        'fees__id',
-                                                        'fees__total_amount',
-                                                        'fees__name',
-                                                        'fees__total_paid',)
-        result = group_by_key(grades, 'name') if grades else {}
+        fee_type = request.query_params.get('fee_type', "TERM")
+        date = request.query_params.get('date', today)
+        
+        if fee_type not in FeeType.values:
+            raise ValueError(f"Invalid fee_type: {fee_type}")
+
+        # Get filtered queryset for fees
+        fees_queryset = self.get_queryset(term_id, fee_type)
+
+        result = self.get_results(term_id, fee_type, fees_queryset, date)
 
         return Response(result, status=status.HTTP_200_OK)
+
+    
+    def get_queryset(self, term_id: int, fee_type: str) -> List[Grade]:
+        return (
+            Fee.objects.filter(fee_type=fee_type)
+            if fee_type == "ADMISSION"
+            else Fee.objects.filter(Q(fee_type=fee_type) & Q(term=term_id))
+        )
+    
+    def get_results(self, term_id: int, fee_type: str, query_set, date):
+        
+        if not query_set:
+            return {}
+
+        if fee_type == "ADMISSION":
+            results = query_set.values( 
+                'id', 'name', 'total_amount', 'total_paid',
+            )
+            return group_by_key(results, 'name') if results else {}
+        grade_filter = Q(fees__term=term_id) & Q(fees__fee_type=fee_type)
+
+        # Apply date filter if fee_type is DAILY
+        if fee_type == "DAILY":
+            grade_filter &= Q(fees__created_at__contains=date)
+
+        # Get the annotated grades with prefetched fees
+        results = (
+            Grade.objects.filter(grade_filter)
+            .prefetch_related(Prefetch('fees', queryset=query_set))
+            .annotate(total_students=Count('students'))
+            .values(
+                'id', 'name', 'total_students',
+                'fees__id', 'fees__total_amount',
+                'fees__name', 'fees__total_paid',
+            )
+        )
+
+        return group_by_key(results, 'name') if results else {}
+            
+        
+
+    
+    
+
 
 
 class GradeFeeView(APIView):

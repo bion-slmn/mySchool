@@ -167,7 +167,7 @@ export const fetchData = async (
 ) => {
   let data = null; // Initialize data to null
   let urlError = ""; // Initialize error message to an empty string
-  const url = "https://myschool-ax55.onrender.com/" + endpoint;
+  const url = "http://127.0.0.1:8000/" + endpoint;
 
   if (checkTokenAndRefresh) {
     await checkTokenAndRefresh();

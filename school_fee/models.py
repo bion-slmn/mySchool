@@ -211,7 +211,7 @@ class Fee(BaseModel):
 
 
     def __str__(self) -> str:
-        return f'{self.name} {self.from_date} - {self.to_date}'
+        return f'{self.name}'
     
 
 
