@@ -30,17 +30,20 @@ class PaymentonFee(APIView):
         Returns:
             Response: A response object containing the grouped payment data organized by student name.
         """
-    
+        
         all_payment = self.get_payment_per_student(fee_id)
         return Response(all_payment, 200)
     
     def get_payment_per_student(self, fee_id):
     # Fetch the fee and related students and their payments in a single optimized query
         fee = get_object_or_404(Fee.objects.prefetch_related("students__payments"), id=fee_id)
+        if fee.fee_type == "ADMISSION":
+            return self.get_admission_payment(fee)
         
         results = {}
         for student in fee.students.all():
             student_payments = student.payments.all()
+            print(student_payments, 222222)
             
             if len(student_payments) == 0:
                 results[student.name] = {'student_id': student.id, 'amount': 0}
@@ -52,6 +55,18 @@ class PaymentonFee(APIView):
 
     def get_total_payments(self, student_payments):
         return sum(payment.amount for payment in student_payments)
+
+    
+    def get_admission_payment(self, fee):
+        payments = fee.payments.prefetch_related("student")
+        results = {}
+        for payment in payments.all():
+            if payment.student.name not in results:
+                results[payment.student.name] = {
+                    'student_id': payment.student.id, 'amount': payment.amount}
+            else:
+                results[payment.student.name]['amount'] += payment.amount
+        return results
 
 
 

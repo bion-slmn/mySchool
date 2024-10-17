@@ -8,16 +8,18 @@ const GradeandFees = ({ data, feeType }) => {
 
   // Navigate to fee details page when the card is clicked
   const handleCardClick = (feeId, feeName, feeToPay, total_students) => {
-    if (total_students) {
+    if (total_students || feeType === "ADMISSION") {
+      console.log(feeName, feeId, feeToPay, "wwwwwwwwww");
       navigate(`/fee/${feeName}/${feeId}/${feeToPay}`);
     }
   };
 
   // Calculate the percentage of fee paid for each fee
   const calculatePercentage = (fee) => {
-    const total_paid = fee.fees__total_paid || fee.total_paid;
-    const total_amount = fee.total_amount || fee.fees__total_amount;
-    const students = fee.total_students;
+    console.log(fee, "ttttttttttttttttt");
+    const total_paid = fee.fees__total_paid || fee.total_paid || 0;
+    const total_amount = fee.total_amount || fee.fees__total_amount || 0;
+    const students = fee.total_students || 1;
 
     if (students === 0 && feeType !== "ADMISSION") {
       return 0;
@@ -67,20 +69,18 @@ const GradeandFees = ({ data, feeType }) => {
                   className="card"
                   onClick={() =>
                     handleCardClick(
-                      fee.fees__id,
-                      fee.fees__name,
-                      fee.fees__total_amount,
-                      fee.total_students
+                      fee.fees__id || fee.id,
+                      fee.fees__name || fee.name,
+                      fee.fees__total_amount || fee.total_amount,
+                      fee.total_students || 0
                     )
                   }
                 >
                   <div className="cardContent">
                     <p>
-                      {`${
-                        fee.fees__name
-                      } | Kshs ${fee.fees__total_amount.toFixed(2)} | ${
-                        fee.total_students
-                      } students`}
+                      {`${fee.fees__name || fee.name} | Kshs ${(
+                        fee.fees__total_amount || fee.total_amount
+                      ).toFixed(2)} | ${fee.total_students || 0} students`}
                     </p>
 
                     {/* Progress bar to show percentage paid */}
@@ -91,8 +91,10 @@ const GradeandFees = ({ data, feeType }) => {
                     {/* Display paid amount and total amount to be received */}
                     <p>
                       Paid: Kshs{" "}
-                      {`${fee.fees__total_paid.toFixed(2)} / ${(
-                        fee.fees__total_amount * fee.total_students
+                      {`${fee.fees__total_paid || fee.total_paid || 0} / ${(
+                        fee.fees__total_amount ||
+                        fee.total_amount * fee.total_students ||
+                        1
                       ).toFixed(2)}`}
                     </p>
                   </div>

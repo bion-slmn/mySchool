@@ -83,10 +83,11 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    console.log(formData.term, dateCreated, 232323);
     if (formData.term) {
       fetchFees(formData.term);
     }
-  }, [formData.term, dateCreated]);
+  }, [formData.term, dateCreated, feeType]);
 
   return (
     <div>
