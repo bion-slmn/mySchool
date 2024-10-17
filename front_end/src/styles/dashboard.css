@@ -22,7 +22,7 @@
   
   input,
   select {
-    width: 100%;
+    
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -36,21 +36,6 @@
     }
   }
 
-  select {
-   
-    border: 1px solid #28a745; /* Green border */
-    border-radius: 5px;
-  
-    background-color: white; /* Background color */
-    
-  }
-  
-  select:focus, input:focus {
-    outline: none;
-    border-color: #218838; /* Darker green for focus state */
-    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
-    background-color : #28a745;
-    columns: white;
-  }
+ 
  
   
