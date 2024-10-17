@@ -27,11 +27,13 @@ const Dashboard = () => {
   const fetchTermId = async () => {
     try {
       const url = "api/school/view-terms/?status=True";
+      setIsLoading(true);
       const [data, urlError] = await fetchData(
         "GET",
         url,
         checkTokenAndRefresh
       );
+      setIsLoading(false);
       if (urlError) {
         setError(urlError);
         console.log(urlError);
@@ -66,7 +68,7 @@ const Dashboard = () => {
         console.log(urlError);
         return;
       }
-      console.log(data, "data1111111111111111111");
+
       setFeeData(data);
     } catch (err) {
       console.error(err);
@@ -84,7 +86,6 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    console.log(formData.term, dateCreated, 232323);
     if (formData.term) {
       fetchFees(formData.term);
     }

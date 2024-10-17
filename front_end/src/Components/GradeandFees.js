@@ -74,7 +74,7 @@ const GradeandFees = ({ data, feeType }) => {
           <div className="gradeSection">
             <h4 className="gradeTitle">{gradeName}</h4>
             <p className="gradeTotal">
-              Paid : kes {calculateTotalPaidForGrade(fees)}
+              Paid : kshs {calculateTotalPaidForGrade(fees)}
             </p>
 
             <div className="cardsContainer">
