@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styles/navbar.css";
 import { FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { useAuth } from "./AuthProvider";
 import { fetchData } from "./form";
 import RotatingIcon from "./loadingIcon";
 import { Dropdown } from "../pages/home";
+
 const DisplayUserInfo = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
@@ -14,7 +15,7 @@ const DisplayUserInfo = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      setIsLoading(true); // Moved here inside useEffect
+      setIsLoading(true);
       let [data, error] = await fetchData(
         "GET",
         "api/user/get-user-info/",
@@ -50,9 +51,11 @@ const DisplayUserInfo = () => {
 const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [register, setRegister] = useState(false);
   const navigate = useNavigate();
   const user = useAuth();
-  const [register, setRegister] = useState(false);
+  const dropdownRef = useRef(null); // Ref for user info dropdown
+  const registerRef = useRef(null); // Ref for register dropdown
 
   // Check localStorage when the component mounts
   useEffect(() => {
@@ -61,13 +64,28 @@ const NavBar = () => {
     }
   }, [user]);
 
+  // Handle click outside to close user info dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+      if (registerRef.current && !registerRef.current.contains(event.target)) {
+        setRegister(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef, registerRef]);
+
   const handleLogin = () => {
-    // Logic to log in the user
     navigate("/login");
   };
 
   const handleLogout = () => {
-    // Logic to log out the user
     setIsLoggedIn(false);
     user.logOut();
   };
@@ -89,12 +107,12 @@ const NavBar = () => {
       </div>
       <div className="navbar-right">
         {isLoggedIn ? (
-          <div className="dropdown-nav">
+          <div className="dropdown-nav" ref={dropdownRef}>
             <button onClick={seeRegister} className="seeRegister">
               Register ...
             </button>
             {register && (
-              <div className="dropdown-menu" onClick={() => setRegister(false)}>
+              <div className="dropdown-menu" ref={registerRef}>
                 <Dropdown />
               </div>
             )}
