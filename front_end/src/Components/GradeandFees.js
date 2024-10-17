@@ -1,29 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/cards.css";
 import ProgressBar from "./progressBar";
 
 const GradeandFees = ({ data, feeType }) => {
   const navigate = useNavigate();
+  const [totalPaid, setTotalPaid] = useState(0);
 
   // Navigate to fee details page when the card is clicked
   const handleCardClick = (feeId, feeName, feeToPay, total_students) => {
     if (total_students || feeType === "ADMISSION") {
-      console.log(feeName, feeId, feeToPay, "wwwwwwwwww");
       navigate(`/fee/${feeName}/${feeId}/${feeToPay}`);
     }
   };
 
   // Calculate the percentage of fee paid for each fee
   const calculatePercentage = (fee) => {
-    console.log(fee, "ttttttttttttttttt");
     const total_paid = fee.fees__total_paid || fee.total_paid || 0;
     const total_amount = fee.total_amount || fee.fees__total_amount || 0;
     const students = fee.total_students || 1;
 
-    if (students === 0 && feeType !== "ADMISSION") {
-      return 0;
-    }
+    if (students === 0 && feeType !== "ADMISSION") return 0;
 
     return ((total_paid / (total_amount * students)) * 100).toFixed(2);
   };
@@ -31,32 +28,50 @@ const GradeandFees = ({ data, feeType }) => {
   // Calculate the total amount paid for a grade
   const calculateTotalPaidForGrade = (fees) => {
     if (feeType === "ADMISSION") {
-      return fees.total_paid + "/" + fees.total_amount;
+      return `${fees.total_paid} / ${fees.total_amount}`;
     }
 
     const fee_paid = fees
-      .reduce((total, fee) => total + fee.fees__total_paid, 0)
+      .reduce((total, fee) => total + (fee.fees__total_paid || 0), 0)
       .toFixed(2);
 
     const fee_total = fees
       .reduce(
-        (total, fee) => total + fee.fees__total_amount * fee.total_students,
+        (total, fee) =>
+          total + (fee.fees__total_amount || 0) * (fee.total_students || 0),
         0
       )
       .toFixed(2);
 
-    return fee_paid + " / " + fee_total;
+    return `${fee_paid} / ${fee_total}`;
   };
+
+  // Calculate the total amount paid across all grades
+  const calculateTotalPaidOverall = () => {
+    let total = 0;
+
+    Object.values(data).forEach((fees) => {
+      fees.forEach((fee) => {
+        total += fee.fees__total_paid || fee.total_paid || 0;
+      });
+    });
+
+    return total.toFixed(2);
+  };
+
+  // Set the total paid amount when the component mounts or data changes
+  useEffect(() => {
+    const total = calculateTotalPaidOverall();
+    setTotalPaid(total);
+  }, [data]);
 
   return (
     <div className="container">
+      <h3>Total Paid: Kshs {totalPaid}</h3>
       {Object.entries(data).map(([gradeName, fees], index) => (
         <div key={gradeName}>
           <div className="gradeSection">
-            {/* Display the grade name */}
             <h4 className="gradeTitle">{gradeName}</h4>
-
-            {/* Calculate and display the total amount paid for this grade */}
             <p className="gradeTotal">
               Total Paid for {gradeName}: Kshs{" "}
               {calculateTotalPaidForGrade(fees)}
@@ -82,19 +97,15 @@ const GradeandFees = ({ data, feeType }) => {
                         fee.fees__total_amount || fee.total_amount
                       ).toFixed(2)} | ${fee.total_students || 0} students`}
                     </p>
-
-                    {/* Progress bar to show percentage paid */}
                     <ProgressBar completed={calculatePercentage(fee)} />
                   </div>
 
                   <div className="total">
-                    {/* Display paid amount and total amount to be received */}
                     <p>
                       Paid: Kshs{" "}
                       {`${fee.fees__total_paid || fee.total_paid || 0} / ${(
                         fee.fees__total_amount ||
-                        fee.total_amount * fee.total_students ||
-                        1
+                        fee.total_amount * (fee.total_students || 1)
                       ).toFixed(2)}`}
                     </p>
                   </div>
@@ -102,8 +113,7 @@ const GradeandFees = ({ data, feeType }) => {
               ))}
             </div>
           </div>
-          {index < Object.entries(data).length - 1 && <hr />}{" "}
-          {/* Add line between grades */}
+          {index < Object.entries(data).length - 1 && <hr />}
         </div>
       ))}
     </div>
