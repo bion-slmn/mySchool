@@ -67,10 +67,6 @@ class PaymentonFee(APIView):
             else:
                 results[payment.student.name]['amount'] += payment.amount
         return results
-
-
-
-
     
     def get_total_paid_per_student(self, source: List[Dict[str, Any]]) -> List[Dict[str, int]]:
         """
@@ -152,8 +148,8 @@ class DailyPaymentView(APIView):
     permission_classes = [AllowAny]
    
 
-    #@handle_exceptions
-    #@transaction.atomic  # Ensures all or nothing behavior
+    @handle_exceptions
+    @transaction.atomic  # Ensures all or nothing behavior
     def post(self, request):
         """
         Create multiple payment records for students in one database operation.

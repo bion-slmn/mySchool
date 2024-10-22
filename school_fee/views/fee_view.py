@@ -175,7 +175,7 @@ class FeePercentageCollected(APIView):
 
         # Apply date filter if fee_type is DAILY
         if fee_type == "DAILY":
-            grade_filter &= Q(fees__created_at__contains=date)
+            grade_filter &= Q(fees__created_at__date=date)
 
         # Get the annotated grades with prefetched fees
         results = (

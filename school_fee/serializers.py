@@ -1,6 +1,6 @@
 from .models import School, Grade, Student, Fee, Payment, Term
 from rest_framework import serializers
-
+from django.db import transaction, F
 
 
 class BaseSerializer(serializers.ModelSerializer):
@@ -91,7 +91,18 @@ class BulkCreateListSerializer(serializers.ListSerializer):
     
     def create(self, validated_data):
         payments = [Payment(**item) for item in validated_data]
-        return Payment.objects.bulk_create(payments)
+        with transaction.atomic():
+            created_payments = Payment.objects.bulk_create(payments)
+            for payment in created_payments:
+                self.update_fee_total(payment)
+
+        return created_payments
+
+    def update_fee_total(self, payment):
+        """Update the total paid for the associated fee."""
+        Fee.objects.filter(id=payment.fee.id).update(
+            total_paid=F('total_paid') + payment.amount
+        )
 
 class PaymentBulkSerializer(serializers.ModelSerializer):
     date_paid = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
