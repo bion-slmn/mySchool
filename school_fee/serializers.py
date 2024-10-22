@@ -1,6 +1,7 @@
 from .models import School, Grade, Student, Fee, Payment, Term
 from rest_framework import serializers
-from django.db import transaction, F
+from django.db import transaction
+from django.db.models import F
 
 
 class BaseSerializer(serializers.ModelSerializer):
