@@ -209,6 +209,12 @@ class Fee(BaseModel):
 
         super().save(*args, **kwargs)
 
+    @classmethod
+    def bulk_create_with_names(cls, fees):
+        for fee in fees:
+            fee.set_name()
+        return cls.objects.bulk_create(fees)
+
 
     def __str__(self) -> str:
         return f'{self.name}'

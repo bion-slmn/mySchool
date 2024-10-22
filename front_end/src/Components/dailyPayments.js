@@ -275,7 +275,6 @@ export const AddDailyPayments = () => {
     setIsLoading(true);
     try {
       const studentUrl = `api/school/students-in-grade/${grade}/`;
-      const feeUrl = `api/school/daily-fee/${grade}/?created_at=${datePaid}`;
 
       const [studentsData, studentsError] = await fetchData(
         "GET",

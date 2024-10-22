@@ -12,6 +12,7 @@ from collections import defaultdict
 from django.db.models import Count, Prefetch
 from django.db.models import Q
 from django.utils import timezone
+from django.db import transaction
 
 
 
@@ -76,32 +77,24 @@ class FeeView(APIView):
         """      
         
         fee_data = request.data.copy()
-        
         fee_data.pop('grade_ids', None)
+        term = fee_data.pop('term')
         
         if not fee_data:
             raise ValueError({"detail": "Fee details must be provided."})
         
         serializer = FeeSerializer(data=fee_data, partial=True)
         serializer.is_valid(raise_exception=True)
-        print(fee_data, 2222222222)
 
         if fee_data.get("fee_type") == "ADMISSION":
             serializer.save()
-
             return Response(serializer.data, 201)
         
         grades = self.validate_grade_id(request)
-
-        results = []
-       
-        for grade in grades:
-    
-            fee = serializer.save(grade=grade)
-            grade_students = Student.objects.filter(grade=grade)
-            fee.students.add(*grade_students)
-            results.append(FeeSerializer(fee).data)
-
+        term = get_object_or_404(Term, id=term)
+        fees_to_create = [
+            Fee(**{**fee_data, "grade": grade, "term": term}) for grade in grades]
+        results = self.create_fee(fees_to_create)
         return Response(results, status=status.HTTP_201_CREATED)
     
     def validate_grade_id(self, request) -> List[Grade]:
@@ -119,12 +112,23 @@ class FeeView(APIView):
         if not grade_ids or not isinstance(grade_ids, list):
             raise ValueError({"detail": "Grade IDs must be provided as a list."})
 
-        grades = Grade.objects.filter(id__in=grade_ids)
+        grades = Grade.objects.filter(id__in=grade_ids).prefetch_related('students')
 
         if len(grades) != len(grade_ids):
             raise ValueError({"detail": "Some grade IDs are invalid."})
-        
         return grades
+    
+
+    def create_fee(self, fees_list):
+        with transaction.atomic():
+            # Create all fees in a single query.
+            created_fees = Fee.bulk_create_with_names(fees_list)
+            for fee in created_fees:
+                grade = fee.grade
+                fee.students.add(*grade.students.all())
+
+        return FeeSerializer(created_fees, many=True).data
+
 
 
 class FeePercentageCollected(APIView):
