@@ -78,5 +78,12 @@ clean:
 	@echo "Cleaning up migrations files ..."
 	rm -f *.sqlite3
 	@echo "Cleaning up log files ..."     
-	rm -rf logs/   
+	rm -rf logs/
+
+lint:
+	@echo "Linting code with pycodestyle..."
+	$(POETRY_RUN) pycodestyle ./*.py
+	@echo "Checking type hints with mypy..."
+	$(POETRY_RUN) mypy ./
+
 
