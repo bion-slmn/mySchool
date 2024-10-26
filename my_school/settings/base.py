@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-e35@d110ripdwn8%lvzh_-#h*p&&63f5vi3%*@0ljrr30o^d)6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -56,10 +56,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -67,7 +69,23 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
+
+INTERNAL_IPS = [                                               # <-- NEW
+    '127.0.0.1',                                               # <-- NEW
+]                                                              # <-- NEW
+
+def show_toolbar(request):                                     # <-- NEW
+    return True                                                # <-- NEW 
+
+DEBUG_TOOLBAR_CONFIG = {                                       # <-- NEW
+    "SHOW_TOOLBAR_CALLBACK" : show_toolbar,                    # <-- NEW
+}                                                              # <-- NEW
+
+if DEBUG:                                                      # <-- NEW
+    import mimetypes                                           # <-- NEW          
+    mimetypes.add_type("application/javascript", ".js", True)
 
 ROOT_URLCONF = 'my_school.urls'
 AUTH_USER_MODEL = 'school_users.User'
@@ -77,7 +95,7 @@ CORS_ORIGIN_WHITELIST = ['http://localhost:3000', 'https://my-school-psi.vercel.
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
