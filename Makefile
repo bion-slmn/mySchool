@@ -1,4 +1,5 @@
 .PHONY: start-project start-app migrate migrations runserver allmigrations push testapi
+.DEFAULT_GOAL := runserver
 HOSTNAME = localhost:8000
 POETRY_RUN = poetry run
 POETRY_RUN_DJANGO = $(POETRY_RUN) python manage.py
@@ -49,7 +50,7 @@ endef
 
 
 # Define specific test targets
-.PHONY: testget testpost testput testdelete
+.PHONY: testget testpost testput testdelete, clean
 
 testget:
 	$(call test,GET,$(data))
@@ -70,3 +71,12 @@ testmodule:
 testall:
 	@echo "Testing all modules..."
 	$(POETRY_RUN_DJANGO) test
+
+clean:
+	@echo "Cleaning up pycahe files ..."
+	rm -rf */__pycache__ 
+	@echo "Cleaning up migrations files ..."
+	rm -f *.sqlite3
+	@echo "Cleaning up log files ..."     
+	rm -rf logs/   
+
